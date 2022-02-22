@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Sleipnir</string>
+    <string name="username_input">User name</string>
+    <string name="firstName_input">First name</string>
+    <string name="lastName_input">Last name</string>
+    <string name="password_input">Password</string>
+    <string name="repeatedPassword_input">Repeat password</string>
+    <string name="email_input">Email</string>
+    <string name="telegramUser_input">Telegram user</string>
+
+    <string name="submit_button">Submit</string>
+    <string name="signup_label">If not signed up, sign up here</string>
+    <string name="signup_button">Sign Up</string>
 </resources>
