@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Sleipnir</string>
+
+    <string name="login_title">Login</string>
+    <string name="signup_title">Sign up</string>
+
     <string name="username_input">User name</string>
     <string name="firstName_input">First name</string>
     <string name="lastName_input">Last name</string>
@@ -11,4 +15,7 @@
     <string name="submit_button">Submit</string>
     <string name="signup_label">If not signed up, sign up here</string>
     <string name="signup_button">Sign Up</string>
+
+    <string name="password_error">Passwords do not match</string>
+    <string name="telegramUser_error">Incorret telegram user format. Starts with \'@\'</string>
 </resources>
