@@ -18,4 +18,5 @@
 
     <string name="password_error">Passwords do not match</string>
     <string name="telegramUser_error">Incorret telegram user format. Starts with \'@\'</string>
+    <string name="title_activity_create_route">CreateRouteActivity</string>
 </resources>

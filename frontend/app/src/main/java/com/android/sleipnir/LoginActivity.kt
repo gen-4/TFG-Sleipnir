@@ -1,14 +1,11 @@
 package com.android.sleipnir
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
-
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -45,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
             val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, json,
                 { response ->
-                    val intent = Intent(this, SignupActivity::class.java)
+                    val intent = Intent(this, CreateRouteActivity::class.java)
                     intent.putExtra("token", response.getString("token"))
                     val user = response.getJSONObject("user")
                     intent.putExtra("userId", user.getInt("id"))
