@@ -30,12 +30,13 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="YOUR_API_KEY" />
 
         <activity
-            android:name=".CreateRouteActivity"
+            android:name=".DrawerActivity"
             android:exported="false"
-            android:label="@string/title_activity_create_route" />
+            android:label="@string/title_activity_drawer"
+            android:theme="@style/Theme.Sleipnir.NoActionBar" />
         <activity
             android:name=".SignupActivity"
             android:exported="false" />

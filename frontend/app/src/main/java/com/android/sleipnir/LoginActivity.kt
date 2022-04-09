@@ -42,10 +42,11 @@ class LoginActivity : AppCompatActivity() {
 
             val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, json,
                 { response ->
-                    val intent = Intent(this, CreateRouteActivity::class.java)
+                    val intent = Intent(this, DrawerActivity::class.java)
                     intent.putExtra("token", response.getString("token"))
                     val user = response.getJSONObject("user")
                     intent.putExtra("userId", user.getInt("id"))
+                    intent.putExtra("userName", userNameInput.text.toString())
                     startActivity(intent)
                 },
                 { error ->
