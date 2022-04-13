@@ -23,7 +23,7 @@
             android:layout_marginBottom="18dp"
             android:gravity="center"
             android:text="@string/signup_title"
-            android:textColor="@color/white"
+            android:textColor="@color/textColor"
             android:textSize="26sp" />
 
 
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/backColor"
             android:text="@string/submit_button"
-            android:textColor="@color/white" />
+            android:textColor="@color/textColor" />
 
     </LinearLayout>
 

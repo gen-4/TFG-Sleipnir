@@ -19,18 +19,28 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.widget.Button
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
+import com.android.sleipnir.DrawerActivity
+import com.android.sleipnir.FillRouteInfoActivity
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
+import java.util.ArrayList
 
-class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener {
+class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private lateinit var mMap: GoogleMap
 
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private lateinit var btn: Button
+
+    private var markerList = ArrayList<Marker>()
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -41,6 +51,7 @@ class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener {
 
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.setOnMarkerClickListener(this)
+        mMap.setOnMapClickListener(this)
 
         setUpMap()
     }
@@ -56,7 +67,7 @@ class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener {
                 requireContext() as Activity, arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION),
-                CreateRoute.LOCATION_REQUEST_CODE
+                LOCATION_REQUEST_CODE
             )
             return
         }
@@ -67,17 +78,10 @@ class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener {
             if (location != null) {
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
-                placeMarkerOnMap(currentLatLong)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 12f))
             }
 
         }
-    }
-
-    private fun placeMarkerOnMap(currentLatLong: LatLng) {
-        val markerOptions = MarkerOptions().position(currentLatLong)
-        markerOptions.title("You r here")
-        mMap.addMarker((markerOptions))
     }
 
     override fun onMarkerClick(p0: Marker) = false
@@ -96,5 +100,43 @@ class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener {
         mapFragment?.getMapAsync(callback)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        btn = requireActivity().findViewById(R.id.introduce_info_btn)
+        btn.setOnClickListener {
+
+            val pointList = ArrayList<LatLng>()
+
+            for (marker in markerList) {
+                pointList.add(marker.position)
+            }
+
+            val userId = activity?.intent?.getIntExtra("userId", -1)
+            val token = activity?.intent?.getStringExtra("token")
+            val userName = activity?.intent?.getStringExtra("userName")
+
+            val intnt = Intent(requireContext(), FillRouteInfoActivity::class.java)
+
+            intnt.putParcelableArrayListExtra("points", pointList)
+            intnt.putExtra("userId", userId)
+            intnt.putExtra("token", token)
+            intnt.putExtra("userName", userName)
+            startActivity(intnt)
+        }
     }
+
+    override fun onMapClick(p0: LatLng) {
+        val markerOptions = MarkerOptions().position(p0)
+        markerOptions.draggable(true)
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+        if (markerList.isEmpty()) {
+            btn.visibility = View.VISIBLE
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        }
+        val marker: Marker? = mMap.addMarker((markerOptions))
+        if (marker != null) {
+            markerList.add(marker)
+        }
+    }
+
+
 }

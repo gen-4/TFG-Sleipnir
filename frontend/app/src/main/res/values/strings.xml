@@ -30,4 +30,17 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+
+    <string name="create_route_instrucions">Build the route, then press the button to continue</string>
+    <string name="create_rute_button">Proceed</string>
+
+
+    <string name="route_name">Route name</string>
+    <string name="x_coord">X coordinate</string>
+    <string name="y_coord">Y coordinate</string>
+    <string name="max_participants_label">Max number of participants</string>
+    <string name="duration_label">Duration</string>
+    <string name="date_picker_label">Celebration date</string>
+    <string name="time_picker_label">Celebration time</string>
 </resources>

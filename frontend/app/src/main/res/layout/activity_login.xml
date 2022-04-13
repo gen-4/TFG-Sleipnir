@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:text="@string/login_title"
-            android:textColor="@color/white"
+            android:textColor="@color/textColor"
             android:gravity="center"
             android:layout_marginBottom="18dp" />
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/backColor"
             android:text="@string/submit_button"
-            android:textColor="@color/white" />
+            android:textColor="@color/textColor" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 android:layout_marginStart="40dp"
                 android:labelFor="@id/SignupButton"
                 android:text="@string/signup_label"
-                android:textColor="@color/white" />
+                android:textColor="@color/textColor" />
 
             <Button
                 android:id="@+id/SignupButton"
@@ -77,7 +77,7 @@
                 android:layout_marginStart="32dp"
                 android:backgroundTint="@color/backColor"
                 android:text="@string/signup_button"
-                android:textColor="@color/white" />
+                android:textColor="@color/textColor" />
 
         </LinearLayout>
 

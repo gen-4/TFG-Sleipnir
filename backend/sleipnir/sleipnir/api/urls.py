@@ -9,4 +9,7 @@ api_urls = [
         path('login', views.login, name='login'),
         path('<id>', views.getRider, name='get_rider'),
     ])),
+    path('route/', include([
+        path('create_route', views.createRoute, name='create_route'),
+    ])),
 ]

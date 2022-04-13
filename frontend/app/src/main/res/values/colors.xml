@@ -12,6 +12,7 @@
     <color name="primary">#668586</color>
     <color name="secondary">#82aeb1</color>
     <color name="backColor">#93c6d6</color>
-    <color name="textColor">#a7acd9</color>
+    <color name="softColor">#a7acd9</color>
     <color name="wildcard">#9e8fb2</color>
+    <color name="textColor">#FFFFFFFF</color>
 </resources>

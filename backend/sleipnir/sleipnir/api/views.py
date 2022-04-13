@@ -1,3 +1,4 @@
+import json
 from sqlite3 import DatabaseError
 from django.contrib.auth import authenticate
 from django.db import transaction
@@ -8,14 +9,16 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
     HTTP_200_OK,
+    HTTP_500_INTERNAL_SERVER_ERROR,
 )
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
 
 from django.contrib.auth.models import User
+from simplejson import JSONDecoder, JSONEncoder
 
-from .models import Rider
-from .serializers import RiderSignupSerializer, UserLoginSerializer, RiderSerializer
+from .models import Rider, Route, Point
+from .serializers import PointSerializer, RiderSignupSerializer, RouteSerializer, UserLoginSerializer, RiderSerializer
 
 # Create your views here.
 
@@ -83,3 +86,45 @@ def getRider(request, id):
 
     rider_serializer = RiderSerializer(rider)
     return Response(rider_serializer.data, status = HTTP_200_OK)
+
+
+@api_view(['POST'])
+def createRoute(request):
+    json_data = request.data
+    points_array = json_data.pop('points')
+
+    route_serializer = RouteSerializer(data = json_data)
+    route_data = {}
+
+    with transaction.atomic():
+        try:
+            if route_serializer.is_valid():
+                route_data = route_serializer.validated_data
+            
+            route = Route(**route_data)
+            route.save()
+        
+        except IntegrityError:
+            return Response({'detail': 'Route creation failed'}, status=HTTP_400_BAD_REQUEST)
+
+        
+        route_serializer = RouteSerializer(route)
+        route_id = route_serializer.data['id']
+
+        points_array_dict = json.loads(points_array)
+        for point in points_array_dict:
+            point['route'] = route_id
+            point_serializer = PointSerializer(data = point)
+            
+            data = {}
+
+            try:
+                if point_serializer.is_valid():
+                    data = point_serializer.validated_data
+                    
+                point = Point(**data)
+                point.save()
+            except IntegrityError:
+                return Response({'detail': 'Route creation failed: Unable to save a point'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(route_serializer.data, status=HTTP_200_OK)
