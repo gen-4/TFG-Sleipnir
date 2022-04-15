@@ -1,15 +1,17 @@
 from django.contrib import admin
 from django.urls import path, include
 
-import sleipnir.api.views as views
+import sleipnir.api.riderViews as riderViews
+import sleipnir.api.routeViews as routeViews
 
 api_urls = [
     path('user/', include([
-        path('signup', views.signup, name='signup'),
-        path('login', views.login, name='login'),
-        path('<id>', views.getRider, name='get_rider'),
+        path('signup', riderViews.signup, name='signup'),
+        path('login', riderViews.login, name='login'),
+        path('<id>', riderViews.getRider, name='get_rider'),
     ])),
     path('route/', include([
-        path('create_route', views.createRoute, name='create_route'),
+        path('create_route', routeViews.createRoute, name='create_route'),
+        path('get_routes', routeViews.getRoutes, name='get_routes'),
     ])),
 ]

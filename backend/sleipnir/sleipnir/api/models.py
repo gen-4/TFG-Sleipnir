@@ -27,7 +27,7 @@ class Point(models.Model):
     x_coord = models.FloatField(null=False)
     y_coord = models.FloatField(null=False)
     position = models.DecimalField(null=False, default=0, max_digits=2, decimal_places=0)
-    route = models.ForeignKey(Route, null=False, default=0, on_delete=models.CASCADE)
+    route = models.ForeignKey(Route, null=False, default=0, on_delete=models.CASCADE, related_name='route_point')
 
     def __str__(self):
         return self.route.__str__()+' -> '+self.x_coord.__str__()+' : '+self.y_coord.__str__()

@@ -57,3 +57,18 @@ class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = ['id', 'creator', 'route_name', 'max_participants', 'current_participants', 'duration', 'celebration_date']
+
+
+
+class GetPointsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Point
+        fields = ['x_coord', 'y_coord', 'position']
+
+class GetRoutesSerializer(serializers.ModelSerializer):
+    points = GetPointsSerializer(source='route_point', many=True, read_only=True)
+    
+    class Meta:
+        model = Route
+        fields = ['id', 'creator', 'route_name', 'max_participants', 'current_participants', 'duration', 'celebration_date', 'points']
