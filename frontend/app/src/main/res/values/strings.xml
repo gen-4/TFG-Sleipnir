@@ -20,6 +20,7 @@
     <string name="telegramUser_error">Incorret telegram user format. Starts with \'@\'</string>
 
     <string name="title_activity_create_route">Create route</string>
+    <string name="title_fragment_show_routes">Future routes planned</string>
     <string name="title_activity_drawer">Menu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -39,4 +40,8 @@
     <string name="duration_label">Duration</string>
     <string name="date_picker_label">Celebration date</string>
     <string name="time_picker_label">Celebration time</string>
+    <string name="curr_participants_label">Current participants</string>
+
+    <string name="title_activity_join_route">Join route</string>
+    <string name="join_button">Join</string>
 </resources>

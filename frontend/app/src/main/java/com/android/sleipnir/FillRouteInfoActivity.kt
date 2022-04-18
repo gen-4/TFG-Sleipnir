@@ -71,7 +71,7 @@ class FillRouteInfoActivity : AppCompatActivity() {
 
             val celebrationDate = LocalDateTime.of(year, month, day, timeHour, timeMinute)
 
-            val duration = durationHours*60+durationMinutes
+            val duration = durationHours/60+durationMinutes
             val routeNameText = routeName.text
             val maxParticipantsNumber = maxParcipants.value
 

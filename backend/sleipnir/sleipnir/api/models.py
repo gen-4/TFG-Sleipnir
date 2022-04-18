@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 
 from django.contrib.auth.models import User
@@ -19,6 +20,7 @@ class Route(models.Model):
     current_participants = models.DecimalField(default=1, null=False, max_digits=2, decimal_places=0)
     duration = models.DecimalField(null=False, max_digits=4, decimal_places=0)
     celebration_date = models.DateTimeField(null=False)
+    participants = models.ManyToManyField(to=Rider, related_name='rider_route')
 
     def __str__(self):
         return self.route_name+' <- '+self.creator.__str__()+' || '+self.celebration_date.__str__()

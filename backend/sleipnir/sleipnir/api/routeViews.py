@@ -11,7 +11,7 @@ from rest_framework.status import (
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
 
-from .models import Route, Point
+from .models import Route, Point, Rider
 from .serializers import PointSerializer, RouteSerializer, GetRoutesSerializer
 
 
@@ -29,6 +29,7 @@ def createRoute(request):
                 route_data = route_serializer.validated_data
             
             route = Route(**route_data)
+            route.participants.add(Rider.objects.get(pk=route.creator))
             route.save()
         
         except IntegrityError:
@@ -70,4 +71,29 @@ def getRoutes(request):
 
     return Response(routes_list, status=HTTP_200_OK)
 
-     
+
+@api_view(['POST'])
+def joinRoute(request):
+    data = request.data
+    print(data)
+    rider = Rider.objects.get(pk=data['user'])
+    route = Route.objects.get(pk=data['route'])
+
+    if route.current_participants >= route.max_participants:
+        return Response({'detail': 'Unable to join route: Max number of participants reached'}, status=HTTP_400_BAD_REQUEST)
+
+    elif rider in route.participants.all():
+        return Response({'detail': 'Unable to join route: Already joined'}, status=HTTP_400_BAD_REQUEST)
+
+    route.current_participants += 1
+    route.participants.add(rider)
+
+    try:
+        route.save()
+        
+    except IntegrityError:
+        return Response({'detail': 'Unable to join route'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    route_serializer = RouteSerializer(route)
+
+    return Response(route_serializer.data, status=HTTP_200_OK)

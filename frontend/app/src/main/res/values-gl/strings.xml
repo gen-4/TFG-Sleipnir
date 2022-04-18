@@ -20,16 +20,13 @@
     <string name="telegramUser_error">Usuario de telegram incorrecto. Comenza por \'@\'</string>
 
     <string name="title_activity_create_route">Crear ruta</string>
+    <string name="title_fragment_show_routes">Rutas futuras planeadas</string>
     <string name="title_activity_drawer">Menú</string>
     <string name="navigation_drawer_open">Abrir menú de navegación</string>
     <string name="navigation_drawer_close">Pechar menú de navegación</string>
     <string name="nav_header_title">Sleipnir</string>
     <string name="nav_header_desc">Encabezado de navegación</string>
     <string name="action_settings">Opcións</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
 
 
     <string name="create_route_instrucions">Contrúe a ruta, despois preme o botón para continuar</string>
@@ -43,4 +40,8 @@
     <string name="duration_label">Duración</string>
     <string name="date_picker_label">Data de celebración</string>
     <string name="time_picker_label">Hora de celebración</string>
+    <string name="curr_participants_label">Participantes actuales</string>
+
+    <string name="title_activity_join_route">Unirse á ruta</string>
+    <string name="join_button">Unirse</string>
 </resources>

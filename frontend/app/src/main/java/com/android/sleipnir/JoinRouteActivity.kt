@@ -1,0 +1,168 @@
+package com.android.sleipnir
+
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.android.sleipnir.databinding.ActivityJoinRouteBinding
+import com.android.sleipnir.ui.show_routes.ShowRoutes
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Marker
+import org.json.JSONObject
+import org.w3c.dom.Text
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+
+    private lateinit var mMap: GoogleMap
+    private lateinit var binding: ActivityJoinRouteBinding
+
+    private lateinit var lastLocation: Location
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    companion object {
+        private const val LOCATION_REQUEST_CODE = 1
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityJoinRouteBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
+
+        val queue = Volley.newRequestQueue(this)
+
+
+        val strRoute = intent.getStringExtra("route")
+        var jsonRoute = JSONObject()
+
+        if (strRoute != null) {
+            jsonRoute = JSONObject(strRoute)
+        }
+
+        val routeNameText: TextView = findViewById(R.id.route_name)
+        val maxParticipantsText: TextView = findViewById(R.id.max_participants_text)
+        val currParticipantsText: TextView = findViewById(R.id.curr_participants)
+        val dateText: TextView = findViewById(R.id.date_text)
+        val durationText: TextView = findViewById(R.id.duration_text)
+
+        val intDuration = jsonRoute.getInt("duration")
+        val duration = (intDuration / 60).toString().plus(".").plus((intDuration % 60).toString())
+
+        routeNameText.text = jsonRoute.getString("route_name")
+        maxParticipantsText.text = jsonRoute.getInt("max_participants").toString()
+        currParticipantsText.text = jsonRoute.getInt("current_participants").toString()
+        dateText.text = jsonRoute.getString("celebration_date").replace('T', ' ')
+        durationText.text = duration.plus(" h")
+
+
+        val button: Button = findViewById(R.id.join_button)
+        button.setOnClickListener {
+
+            val url = "http://10.0.2.2:8000/route/join_route"
+            val json = JSONObject()
+            json.put("user", intent.getIntExtra("userId", -1))
+            json.put("route", jsonRoute.getInt("id"))
+
+            val jsonObjectRequest = object: JsonObjectRequest(
+                Request.Method.POST, url, json,
+                { reponse ->
+                    val intnt = Intent(this, DrawerActivity::class.java)
+                    intnt.putExtra("userId", intent.getIntExtra("userId", -1))
+                    intnt.putExtra("userName", intent.getStringExtra("userName"))
+                    intnt.putExtra("token", intent.getStringExtra("token"))
+                    startActivity(intnt)
+                },
+                { error ->
+                    Log.d("error", error.toString())
+                }
+            )
+            {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    val token = intent.getStringExtra("token")
+                    if (token != null)
+                        headers["Authorization"] = "Token $token"
+                    return headers
+                }
+            }
+
+            queue.add(jsonObjectRequest)
+        }
+
+    }
+
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.setOnMarkerClickListener(this)
+
+        setUpMap()
+    }
+
+
+
+    private fun setUpMap() {
+        val strRoute = intent.getStringExtra("route")
+        var jsonRoute = JSONObject()
+
+        if (strRoute != null) {
+            jsonRoute = JSONObject(strRoute)
+        }
+
+        val points = jsonRoute.getJSONArray("points")
+        var point: JSONObject
+        for (i in 0 until points.length()) {
+            point = points.getJSONObject(i)
+            val coord = LatLng(point.getDouble("y_coord"), point.getDouble("x_coord"))
+            if (point.getInt("position") == 0)
+                placeMarker(coord, true)
+            else
+                placeMarker(coord, false)
+        }
+    }
+
+    override fun onMarkerClick(p0: Marker): Boolean {
+        return false
+    }
+
+    private fun placeMarker(coord: LatLng, isFirst: Boolean) {
+        val markerOptions = MarkerOptions().position(coord)
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+        if (isFirst)
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        mMap.addMarker(markerOptions)
+        if (isFirst)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coord, 12f))
+    }
+}

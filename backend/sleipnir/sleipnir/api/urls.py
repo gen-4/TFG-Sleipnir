@@ -13,5 +13,6 @@ api_urls = [
     path('route/', include([
         path('create_route', routeViews.createRoute, name='create_route'),
         path('get_routes', routeViews.getRoutes, name='get_routes'),
+        path('join_route', routeViews.joinRoute, name='join_route'),
     ])),
 ]
