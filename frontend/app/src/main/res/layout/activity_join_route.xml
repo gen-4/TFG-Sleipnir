@@ -147,7 +147,16 @@
                 android:layout_height="wrap_content"
                 android:background="@color/primary"
                 android:textColor="@color/textColor"
+                android:visibility="gone"
                 android:text="@string/join_button" />
+            <Button
+                android:id="@+id/leave_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:textColor="@color/textColor"
+                android:visibility="gone"
+                android:text="@string/leave_button" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>

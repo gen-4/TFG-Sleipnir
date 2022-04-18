@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -84,13 +85,81 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         durationText.text = duration.plus(" h")
 
 
-        val button: Button = findViewById(R.id.join_button)
-        button.setOnClickListener {
+        val joinButton: Button = findViewById(R.id.join_button)
+        val leaveButton: Button = findViewById(R.id.leave_button)
 
-            val url = "http://10.0.2.2:8000/route/join_route"
+
+        val url = "http://10.0.2.2:8000/route/".plus(jsonRoute.getInt("id").toString())
+            .plus("/has_joined/").plus(intent.getIntExtra("userId", -1).toString())
+        val jsonObjectRequest = object: JsonObjectRequest(
+            Request.Method.GET, url, null,
+            { response ->
+                val result = response.getInt("joined")
+                if (result == 1) {
+                    leaveButton.visibility = View.VISIBLE
+                } else if (result == -1) {
+                    joinButton.visibility = View.VISIBLE
+                }
+            },
+            { error ->
+                Log.d("error", error.toString())
+            }
+        )
+        {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                val token = intent.getStringExtra("token")
+                if (token != null)
+                    headers["Authorization"] = "Token $token"
+                return headers
+            }
+        }
+
+        queue.add(jsonObjectRequest)
+
+
+
+
+
+        leaveButton.setOnClickListener {
+
+            val url = "http://10.0.2.2:8000/route/".plus(jsonRoute.getInt("id").toString()).plus("/leave_route")
             val json = JSONObject()
             json.put("user", intent.getIntExtra("userId", -1))
-            json.put("route", jsonRoute.getInt("id"))
+
+            val jsonObjectRequest = object: JsonObjectRequest(
+                Request.Method.POST, url, json,
+                { reponse ->
+                    val intnt = Intent(this, DrawerActivity::class.java)
+                    intnt.putExtra("userId", intent.getIntExtra("userId", -1))
+                    intnt.putExtra("userName", intent.getStringExtra("userName"))
+                    intnt.putExtra("token", intent.getStringExtra("token"))
+                    startActivity(intnt)
+                },
+                { error ->
+                    Log.d("error", error.toString())
+                }
+            )
+            {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    val token = intent.getStringExtra("token")
+                    if (token != null)
+                        headers["Authorization"] = "Token $token"
+                    return headers
+                }
+            }
+
+            queue.add(jsonObjectRequest)
+
+        }
+
+
+        joinButton.setOnClickListener {
+
+            val url = "http://10.0.2.2:8000/route/".plus(jsonRoute.getInt("id").toString()).plus("/join_route")
+            val json = JSONObject()
+            json.put("user", intent.getIntExtra("userId", -1))
 
             val jsonObjectRequest = object: JsonObjectRequest(
                 Request.Method.POST, url, json,

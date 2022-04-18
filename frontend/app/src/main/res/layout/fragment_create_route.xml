@@ -17,6 +17,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/backColor"
             android:orientation="vertical"
             android:gravity="bottom">
             <TextView
@@ -24,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
                 android:textSize="25sp"
-                android:textColor="@color/black"
+                android:textColor="@color/textColor"
                 android:text="@string/create_route_instrucions"/>
 
             <Button

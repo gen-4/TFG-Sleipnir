@@ -73,11 +73,11 @@ def getRoutes(request):
 
 
 @api_view(['POST'])
-def joinRoute(request):
+def joinRoute(request, routeId):
     data = request.data
-    print(data)
+    
     rider = Rider.objects.get(pk=data['user'])
-    route = Route.objects.get(pk=data['route'])
+    route = Route.objects.get(pk=routeId)
 
     if route.current_participants >= route.max_participants:
         return Response({'detail': 'Unable to join route: Max number of participants reached'}, status=HTTP_400_BAD_REQUEST)
@@ -97,3 +97,43 @@ def joinRoute(request):
     route_serializer = RouteSerializer(route)
 
     return Response(route_serializer.data, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+def leaveRoute(request, routeId):
+    data = request.data
+
+    rider = Rider.objects.get(pk=data['user'])
+    route = Route.objects.get(pk=routeId)
+
+    if rider not in route.participants.all():
+        return Response({'detail': 'Unable to leave route: Never joined'}, status=HTTP_400_BAD_REQUEST)
+
+    route.current_participants -= 1
+    route.participants.remove(rider)
+
+    try:
+        route.save()
+    
+    except IntegrityError:
+        return Response({'detail': 'Unable to leave route'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    route_serializer = RouteSerializer(route)
+
+    return Response(route_serializer.data, status=HTTP_200_OK)
+
+
+@api_view(['GET'])
+def hasJoined(request, routeId, userId):
+
+    rider = Rider.objects.get(pk=userId)
+    route = Route.objects.get(pk=routeId)
+
+    if rider == route.creator:
+        return Response({'joined': 0}, HTTP_200_OK)
+
+    elif rider in route.participants.all():
+        return Response({'joined': 1}, HTTP_200_OK)
+
+    else:
+        return Response({'joined': -1}, HTTP_200_OK)

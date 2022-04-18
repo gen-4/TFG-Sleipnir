@@ -44,4 +44,5 @@
 
     <string name="title_activity_join_route">Join route</string>
     <string name="join_button">Join</string>
+    <string name="leave_button">Abandon</string>
 </resources>
