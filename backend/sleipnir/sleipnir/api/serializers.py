@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 
-from .models import Rider, Route, Point
+from .models import Rider, Route, Point, Record
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required = True)
@@ -72,3 +72,16 @@ class GetRoutesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = ['id', 'creator', 'route_name', 'max_participants', 'current_participants', 'duration', 'celebration_date', 'points']
+
+
+class RecordPointSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Point
+        fields = ['id', 'x_coord', 'y_coord', 'position', 'record']
+
+class RecordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Record
+        fields = ['id', 'rider', 'record_name', 'distance', 'duration', 'avg_speed']

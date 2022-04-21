@@ -11,8 +11,9 @@ from rest_framework.status import (
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
 
-from .models import Route, Point, Rider
+from .models import Route, Point, Rider, Record
 from .serializers import PointSerializer, RouteSerializer, GetRoutesSerializer
+from .serializers import RecordPointSerializer, RecordSerializer
 
 
 @api_view(['POST'])
@@ -137,3 +138,44 @@ def hasJoined(request, routeId, userId):
 
     else:
         return Response({'joined': -1}, HTTP_200_OK)
+
+@api_view(['POST'])
+def registerRouteData(request):
+    json_data = request.data
+    points_array = json_data.pop('points')
+
+    record_serializer = RecordSerializer(data = json_data)
+    record_data = {}
+
+    with transaction.atomic():
+        try:
+            if record_serializer.is_valid():
+                record_data = record_serializer.validated_data
+            
+            record = Record(**record_data)
+            record.save()
+        
+        except IntegrityError:
+            return Response({'detail': 'Record registration failed'}, status=HTTP_400_BAD_REQUEST)
+
+        
+        record_serializer = RecordSerializer(record)
+        record_id = record_serializer.data['id']
+
+        
+        for point in points_array:
+            point['record'] = record_id
+            point_serializer = RecordPointSerializer(data = point)
+            
+            data = {}
+
+            try:
+                if point_serializer.is_valid():
+                    data = point_serializer.validated_data
+                    
+                point = Point(**data)
+                point.save()
+            except IntegrityError:
+                return Response({'detail': 'Record registration failed: Unable to save a point'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(record_serializer.data, status=HTTP_200_OK)

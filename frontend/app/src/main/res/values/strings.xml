@@ -45,4 +45,11 @@
     <string name="title_activity_join_route">Join route</string>
     <string name="join_button">Join</string>
     <string name="leave_button">Abandon</string>
+
+    <string name="title_fragment_register_route_data">Register route data</string>
+    <string name="text_record_name">Record name</string>
+    <string name="km_ridden">Distance ridden</string>
+    <string name="average_speed">Average speed</string>
+    <string name="start_record">Start</string>
+    <string name="stop_record">Stop</string>
 </resources>

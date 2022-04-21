@@ -17,4 +17,10 @@
         android:name="com.android.sleipnir.ui.create_route.CreateRoute"
         android:label="@string/title_activity_create_route"
         tools:layout="@layout/fragment_create_route" />
+
+    <fragment
+        android:id="@+id/nav_register_route_data"
+        android:name="com.android.sleipnir.ui.register_route_data.RegisterRouteData"
+        android:label="@string/title_fragment_register_route_data"
+        tools:layout="@layout/fragment_register_route_data" />
 </navigation>

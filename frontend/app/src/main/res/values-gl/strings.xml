@@ -45,4 +45,11 @@
     <string name="title_activity_join_route">Unirse á ruta</string>
     <string name="join_button">Unirse</string>
     <string name="leave_button">Abandonar</string>
+
+    <string name="title_fragment_register_route_data">Recabar datos de ruta</string>
+    <string name="text_record_name">Nome do rexistro</string>
+    <string name="km_ridden">Distancia recorrida</string>
+    <string name="average_speed">Velocidade media</string>
+    <string name="start_record">Comezar</string>
+    <string name="stop_record">Parar</string>
 </resources>

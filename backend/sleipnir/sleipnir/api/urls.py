@@ -16,5 +16,6 @@ api_urls = [
         path('<routeId>/join_route', routeViews.joinRoute, name='join_route'),
         path('<routeId>/leave_route', routeViews.leaveRoute, name='leave_route'),
         path('<routeId>/has_joined/<userId>', routeViews.hasJoined, name='has_route'),
+        path('register_route_data', routeViews.registerRouteData, name='register_route_data'),
     ])),
 ]

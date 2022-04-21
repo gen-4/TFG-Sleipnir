@@ -25,11 +25,26 @@ class Route(models.Model):
     def __str__(self):
         return self.route_name+' <- '+self.creator.__str__()+' || '+self.celebration_date.__str__()
 
+class Record(models.Model):
+    rider = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE)
+    record_name = models.CharField(max_length=128, null=False)
+    distance = models.FloatField(null=False)
+    duration = models.IntegerField(null=False, default=0)
+    avg_speed = models.FloatField(null=False, default=0)
+    date = models.DateField(null=False, auto_now=True)
+
+    def __str__(self):
+        return self.record_name+' <- '+self.rider.__str__()+' || '+self.date.__str__()
+
 class Point(models.Model):
     x_coord = models.FloatField(null=False)
     y_coord = models.FloatField(null=False)
     position = models.DecimalField(null=False, default=0, max_digits=2, decimal_places=0)
-    route = models.ForeignKey(Route, null=False, default=0, on_delete=models.CASCADE, related_name='route_point')
+    route = models.ForeignKey(Route, null=True, on_delete=models.CASCADE, related_name='route_point')
+    record = models.ForeignKey(Record, null=True, on_delete=models.CASCADE, related_name='record_point')
 
     def __str__(self):
-        return self.route.__str__()+' -> '+self.x_coord.__str__()+' : '+self.y_coord.__str__()
+        refered = self.route
+        if not refered:
+            refered = self.record
+        return refered.__str__()+' -> '+self.x_coord.__str__()+' : '+self.y_coord.__str__()
