@@ -85,3 +85,16 @@ class RecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Record
         fields = ['id', 'rider', 'record_name', 'distance', 'duration', 'avg_speed']
+
+class GetRecordSerializer(serializers.ModelSerializer):
+    points = GetPointsSerializer(source='record_point', many=True, read_only=True)
+
+    class Meta:
+        model = Record
+        fields = ['id', 'rider', 'record_name', 'distance', 'duration', 'avg_speed', 'date', 'points']
+
+class RecordsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Record
+        fields = ['id', 'record_name', 'date']

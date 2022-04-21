@@ -13,7 +13,7 @@ from psycopg2 import IntegrityError
 
 from .models import Route, Point, Rider, Record
 from .serializers import PointSerializer, RouteSerializer, GetRoutesSerializer
-from .serializers import RecordPointSerializer, RecordSerializer
+from .serializers import RecordPointSerializer, RecordSerializer, RecordsSerializer
 
 
 @api_view(['POST'])
@@ -177,5 +177,14 @@ def registerRouteData(request):
                 point.save()
             except IntegrityError:
                 return Response({'detail': 'Record registration failed: Unable to save a point'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(record_serializer.data, status=HTTP_200_OK)
+
+@api_view(['GET'])
+def getRiderRecords(request, riderId):
+    rider = Rider.objects.get(pk=riderId)
+    records = Record.objects.filter(rider=rider)
+
+    record_serializer = RecordsSerializer(records, many=True)
 
     return Response(record_serializer.data, status=HTTP_200_OK)

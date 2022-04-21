@@ -137,7 +137,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
         val url = "http://10.0.2.2:8000/route/get_routes"
 
         val jsonObjectRequest = object: JsonArrayRequest(
-            Request.Method.GET, url, null,
+            Method.GET, url, null,
             { response ->
                 routeList = response
 

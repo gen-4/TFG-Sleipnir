@@ -52,4 +52,6 @@
     <string name="average_speed">Velocidad media</string>
     <string name="start_record">Empezar</string>
     <string name="stop_record">Parar</string>
+
+    <string name="title_show_register">Ver registros</string>
 </resources>

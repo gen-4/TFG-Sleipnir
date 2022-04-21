@@ -23,4 +23,10 @@
         android:name="com.android.sleipnir.ui.register_route_data.RegisterRouteData"
         android:label="@string/title_fragment_register_route_data"
         tools:layout="@layout/fragment_register_route_data" />
+
+    <fragment
+        android:id="@+id/nav_show_register"
+        android:name="com.android.sleipnir.ui.show_register.ShowRegister"
+        android:label="@string/title_show_register"
+        tools:layout="@layout/fragment_show_register" />
 </navigation>
