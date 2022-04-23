@@ -91,7 +91,7 @@ class GetRecordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Record
-        fields = ['id', 'rider', 'record_name', 'distance', 'duration', 'avg_speed', 'date', 'points']
+        fields = ['id', 'record_name', 'distance', 'duration', 'avg_speed', 'date', 'points']
 
 class RecordsSerializer(serializers.ModelSerializer):
 

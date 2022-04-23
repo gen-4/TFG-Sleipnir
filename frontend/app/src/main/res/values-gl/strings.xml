@@ -54,4 +54,7 @@
     <string name="stop_record">Parar</string>
 
     <string name="title_show_register">Ver rexistros</string>
+
+    <string name="title_activity_detailed_register">Rexistro detallado</string>
+    <string name="record_date">Data</string>
 </resources>

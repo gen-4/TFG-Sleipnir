@@ -54,4 +54,7 @@
     <string name="stop_record">Stop</string>
 
     <string name="title_show_register">Show register</string>
+
+    <string name="title_activity_detailed_register">Detailed register</string>
+    <string name="record_date">Date</string>
 </resources>
