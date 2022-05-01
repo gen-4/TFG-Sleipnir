@@ -3,6 +3,7 @@ package com.android.sleipnir.ui.show_routes
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.android.sleipnir.DrawerActivity
 import com.android.sleipnir.FillRouteInfoActivity
@@ -45,6 +47,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
 
     private var markerList = ArrayList<Marker>()
     private lateinit var routeList: JSONArray
+
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -88,18 +91,10 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {
-        val userId = activity?.intent?.getIntExtra("userId", -1)
-        val token = activity?.intent?.getStringExtra("token")
-        val userName = activity?.intent?.getStringExtra("userName")
-
         val route = routeList.getJSONObject(markerList.indexOf(p0))
 
         val intnt = Intent(requireContext(), JoinRouteActivity::class.java)
-
         intnt.putExtra("route", route.toString())
-        intnt.putExtra("userId", userId)
-        intnt.putExtra("token", token)
-        intnt.putExtra("userName", userName)
         startActivity(intnt)
 
         return true
@@ -129,8 +124,11 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
+        val sharedPref : SharedPreferences = requireActivity().getSharedPreferences("userPreference",
+            AppCompatActivity.MODE_PRIVATE
+        )
 
-        val token = activity?.intent?.getStringExtra("token")
+        val token = sharedPref.getString("token", "")
 
         val queue = Volley.newRequestQueue(requireContext())
 
@@ -164,8 +162,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
         {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                if (token != null)
-                    headers["Authorization"] = "Token $token"
+                headers["Authorization"] = "Token $token"
                 return headers
             }
         }

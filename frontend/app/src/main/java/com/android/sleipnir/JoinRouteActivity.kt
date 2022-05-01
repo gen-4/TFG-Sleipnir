@@ -3,6 +3,7 @@ package com.android.sleipnir
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -88,11 +89,12 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         val joinButton: Button = findViewById(R.id.join_button)
         val leaveButton: Button = findViewById(R.id.leave_button)
 
+        val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
 
         val url = "http://10.0.2.2:8000/route/".plus(jsonRoute.getInt("id").toString())
-            .plus("/has_joined/").plus(intent.getIntExtra("userId", -1).toString())
+            .plus("/has_joined/").plus(sharedPref.getInt("userId", -1).toString())
         val jsonObjectRequest = object: JsonObjectRequest(
-            Request.Method.GET, url, null,
+            Method.GET, url, null,
             { response ->
                 val result = response.getInt("joined")
                 if (result == 1) {
@@ -108,7 +110,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                val token = intent.getStringExtra("token")
+                val token = sharedPref.getString("token", "")
                 if (token != null)
                     headers["Authorization"] = "Token $token"
                 return headers
@@ -131,9 +133,6 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
                 Request.Method.POST, url, json,
                 { reponse ->
                     val intnt = Intent(this, DrawerActivity::class.java)
-                    intnt.putExtra("userId", intent.getIntExtra("userId", -1))
-                    intnt.putExtra("userName", intent.getStringExtra("userName"))
-                    intnt.putExtra("token", intent.getStringExtra("token"))
                     startActivity(intnt)
                 },
                 { error ->
@@ -143,7 +142,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             {
                 override fun getHeaders(): MutableMap<String, String> {
                     val headers = HashMap<String, String>()
-                    val token = intent.getStringExtra("token")
+                    val token = sharedPref.getString("token", "")
                     if (token != null)
                         headers["Authorization"] = "Token $token"
                     return headers
@@ -165,9 +164,6 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
                 Request.Method.POST, url, json,
                 { reponse ->
                     val intnt = Intent(this, DrawerActivity::class.java)
-                    intnt.putExtra("userId", intent.getIntExtra("userId", -1))
-                    intnt.putExtra("userName", intent.getStringExtra("userName"))
-                    intnt.putExtra("token", intent.getStringExtra("token"))
                     startActivity(intnt)
                 },
                 { error ->
@@ -177,7 +173,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             {
                 override fun getHeaders(): MutableMap<String, String> {
                     val headers = HashMap<String, String>()
-                    val token = intent.getStringExtra("token")
+                    val token = sharedPref.getString("token", "")
                     if (token != null)
                         headers["Authorization"] = "Token $token"
                     return headers

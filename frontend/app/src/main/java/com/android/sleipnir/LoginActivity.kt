@@ -1,6 +1,7 @@
 package com.android.sleipnir
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -42,11 +43,17 @@ class LoginActivity : AppCompatActivity() {
 
             val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, json,
                 { response ->
-                    val intent = Intent(this, DrawerActivity::class.java)
-                    intent.putExtra("token", response.getString("token"))
+
+                    val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
                     val user = response.getJSONObject("user")
-                    intent.putExtra("userId", user.getInt("id"))
-                    intent.putExtra("userName", userNameInput.text.toString())
+                    with (sharedPref.edit()) {
+                        putString("token", response.getString("token"))
+                        putInt("userId", user.getInt("id"))
+                        putString("userName", userNameInput.text.toString())
+                        commit()
+                    }
+
+                    val intent = Intent(this, DrawerActivity::class.java)
                     startActivity(intent)
                 },
                 { error ->

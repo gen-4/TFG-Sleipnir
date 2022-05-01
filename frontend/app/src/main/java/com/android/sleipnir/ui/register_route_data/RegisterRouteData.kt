@@ -2,6 +2,7 @@ package com.android.sleipnir.ui.register_route_data
 
 import android.Manifest
 import android.app.Activity
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -16,6 +17,7 @@ import android.widget.Button
 import android.widget.Chronometer
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.android.sleipnir.R
@@ -53,6 +55,7 @@ class RegisterRouteData : Fragment() {
 
     private var pointList = ArrayList<LatLng>()
     private val lineOptions = PolylineOptions()
+
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -211,11 +214,14 @@ class RegisterRouteData : Fragment() {
         }
 
 
+        val sharedPref : SharedPreferences = requireActivity().getSharedPreferences("userPreference",
+            AppCompatActivity.MODE_PRIVATE
+        )
         val queue = Volley.newRequestQueue(requireContext())
         val url = "http://10.0.2.2:8000/route/register_route_data"
 
         val json = JSONObject()
-        json.put("rider", activity?.intent?.getIntExtra("userId", -1))
+        json.put("rider", sharedPref.getInt("userId", -1))
         json.put("record_name", recordName.text)
         json.put("distance", distance)
         json.put("duration", getSecondsFromDurationString(chrono.text.toString()))
@@ -233,10 +239,9 @@ class RegisterRouteData : Fragment() {
         )
         {
             override fun getHeaders(): MutableMap<String, String> {
-                val token = activity?.intent?.getStringExtra("token")
+                val token = sharedPref.getString("token", "")
                 val headers = HashMap<String, String>()
-                if (token != null)
-                    headers["Authorization"] = "Token $token"
+                headers["Authorization"] = "Token $token"
                 return headers
             }
         }

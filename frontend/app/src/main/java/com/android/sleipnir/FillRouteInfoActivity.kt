@@ -1,6 +1,7 @@
 package com.android.sleipnir
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -42,6 +43,8 @@ class FillRouteInfoActivity : AppCompatActivity() {
 
         durationPicker = findViewById(R.id.duration)
         durationPicker.setIs24HourView(true)
+
+        val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
 
         val queue = Volley.newRequestQueue(this)
 
@@ -96,12 +99,9 @@ class FillRouteInfoActivity : AppCompatActivity() {
             json.put("points", jsonList)
 
             val jsonObjectRequest = object: JsonObjectRequest(
-                Request.Method.POST, url, json,
+                Method.POST, url, json,
                 { reponse ->
                     val intnt = Intent(this, DrawerActivity::class.java)
-                    intnt.putExtra("userId", intent.getIntExtra("userId", -1))
-                    intnt.putExtra("userName", intent.getStringExtra("userName"))
-                    intnt.putExtra("token", intent.getStringExtra("token"))
                     startActivity(intnt)
                 },
                 { error ->
@@ -111,7 +111,7 @@ class FillRouteInfoActivity : AppCompatActivity() {
             {
                 override fun getHeaders(): MutableMap<String, String> {
                     val headers = HashMap<String, String>()
-                    val token = intent.getStringExtra("token")
+                    val token = sharedPref.getString("token", "")
                     if (token != null)
                         headers["Authorization"] = "Token $token"
                     return headers

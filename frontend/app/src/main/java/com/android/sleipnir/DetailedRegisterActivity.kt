@@ -1,5 +1,6 @@
 package com.android.sleipnir
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityDetailedRegisterBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,6 +45,7 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.uiSettings.isZoomControlsEnabled = true
 
+        val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
         val queue = Volley.newRequestQueue(this)
 
         val url = "http://10.0.2.2:8000/route/detailed_record/"
@@ -78,7 +81,7 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                val token = intent.getStringExtra("token")
+                val token = sharedPref.getString("token", "")
                 if (token != null)
                     headers["Authorization"] = "Token $token"
                 return headers
@@ -103,8 +106,8 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         val lineOptions = PolylineOptions()
         lineOptions.color(Color.RED)
         lineOptions.geodesic(true)
-        mMap.addPolyline(lineOptions)
         lineOptions.addAll(pointList)
+        mMap.addPolyline(lineOptions)
     }
 
 }

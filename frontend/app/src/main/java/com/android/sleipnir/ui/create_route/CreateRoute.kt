@@ -20,8 +20,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import com.android.sleipnir.DrawerActivity
@@ -41,6 +43,7 @@ class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener, GoogleMap.OnMap
     private lateinit var btn: Button
 
     private var markerList = ArrayList<Marker>()
+
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -110,16 +113,9 @@ class CreateRoute : Fragment(), GoogleMap.OnMarkerClickListener, GoogleMap.OnMap
                 pointList.add(marker.position)
             }
 
-            val userId = activity?.intent?.getIntExtra("userId", -1)
-            val token = activity?.intent?.getStringExtra("token")
-            val userName = activity?.intent?.getStringExtra("userName")
-
             val intnt = Intent(requireContext(), FillRouteInfoActivity::class.java)
 
             intnt.putParcelableArrayListExtra("points", pointList)
-            intnt.putExtra("userId", userId)
-            intnt.putExtra("token", token)
-            intnt.putExtra("userName", userName)
             startActivity(intnt)
         }
     }

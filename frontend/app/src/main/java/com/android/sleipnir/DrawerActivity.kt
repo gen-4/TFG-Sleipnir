@@ -2,6 +2,7 @@ package com.android.sleipnir
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
@@ -51,9 +52,11 @@ class DrawerActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        var header = navView.getHeaderView(0)
+        val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
+
+        val header = navView.getHeaderView(0)
         userNameText = header.findViewById(R.id.nav_header_title)
-        userNameText.text = intent.getStringExtra("userName")
+        userNameText.text = sharedPref.getString("userName", "")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
