@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 
-from .models import Rider, Route, Point, Record
+from .models import Message, Rider, Route, Point, Record
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required = True)
@@ -98,3 +98,23 @@ class RecordsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Record
         fields = ['id', 'record_name', 'date']
+
+class MessageUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username']
+
+class MessageRiderSerializer(serializers.ModelSerializer):
+    user = MessageUserSerializer()
+
+    class Meta:
+        model = Rider
+        fields = ['id', 'user']
+
+class MessageSerializer(serializers.ModelSerializer):
+    writer = MessageRiderSerializer()
+
+    class Meta:
+        model = Message
+        fields = ['writer', 'message', 'date']

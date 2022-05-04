@@ -23,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.android.sleipnir.databinding.ActivityJoinRouteBinding
+import com.android.sleipnir.ui.ShowChat
 import com.android.sleipnir.ui.show_routes.ShowRoutes
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
@@ -31,6 +32,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
+import com.google.android.material.badge.BadgeUtils
 import org.json.JSONObject
 import org.w3c.dom.Text
 import java.time.LocalDate
@@ -59,6 +61,8 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        val showChatButton: Button = findViewById(R.id.show_chat_button)
+
 
         val queue = Volley.newRequestQueue(this)
 
@@ -69,6 +73,14 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         if (strRoute != null) {
             jsonRoute = JSONObject(strRoute)
         }
+
+        showChatButton.setOnClickListener {
+            val intnt = Intent(this, ShowChat::class.java)
+            intnt.putExtra("routeId", jsonRoute.getInt("id"))
+            intnt.putExtra("creator", jsonRoute.getInt("creator"))
+            startActivity(intnt)
+        }
+
 
         val routeNameText: TextView = findViewById(R.id.route_name)
         val maxParticipantsText: TextView = findViewById(R.id.max_participants_text)

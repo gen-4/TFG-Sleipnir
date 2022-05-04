@@ -11,10 +11,10 @@ from rest_framework.status import (
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
 
-from .models import Route, Point, Rider, Record
+from .models import Route, Point, Rider, Record, Message
 from .serializers import PointSerializer, RouteSerializer, GetRoutesSerializer
 from .serializers import RecordPointSerializer, RecordSerializer, RecordsSerializer
-from .serializers import GetRecordSerializer
+from .serializers import GetRecordSerializer, MessageSerializer
 
 
 @api_view(['POST'])
@@ -197,3 +197,13 @@ def getDetailedRecord(request, recordId):
     record_serializer = GetRecordSerializer(record)
 
     return Response(record_serializer.data, status=HTTP_200_OK)
+
+@api_view(['GET'])
+def getMessages(request, routeId):
+    route = Route.objects.get(pk=routeId)
+
+    messages = Message.objects.filter(route=route)
+
+    message_serializer = MessageSerializer(messages, many=True)
+
+    return Response(message_serializer.data, status=HTTP_200_OK)

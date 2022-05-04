@@ -19,5 +19,7 @@ api_urls = [
         path('register_route_data', routeViews.registerRouteData, name='register_route_data'),
         path('rider_records/<riderId>', routeViews.getRiderRecords, name='get_rider_records'),
         path('detailed_record/<recordId>', routeViews.getDetailedRecord, name='get_detailed_record'),
+
+        path('<routeId>/messages', routeViews.getMessages, name='get_messages'),
     ])),
 ]

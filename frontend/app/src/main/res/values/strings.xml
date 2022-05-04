@@ -57,4 +57,9 @@
 
     <string name="title_activity_detailed_register">Detailed register</string>
     <string name="record_date">Date</string>
+
+
+    <string name="creator_label">Creator</string>
+    <string name="show_chat_button">Access chat</string>
+    <string name="you">You</string>
 </resources>

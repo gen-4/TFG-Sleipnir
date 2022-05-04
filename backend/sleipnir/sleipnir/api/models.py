@@ -13,6 +13,7 @@ class Rider(models.Model):
     def __str__(self):
         return self.user.username+'('+self.id.__str__()+')'
 
+
 class Route(models.Model):
     creator = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE)
     route_name = models.CharField(max_length=128, unique=True, null=False)
@@ -25,6 +26,16 @@ class Route(models.Model):
     def __str__(self):
         return self.route_name+' <- '+self.creator.__str__()+' || '+self.celebration_date.__str__()
 
+class Message(models.Model):
+    writer = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE)
+    route = models.ForeignKey(Route, null=False, default=0, on_delete=models.CASCADE, related_name='route_message')
+    message = models.TextField(null=False)
+    date = models.DateTimeField(null=False, auto_now=True)
+
+    def __str__(self):
+        return self.route.__str__()+' '+self.writer.user.username+': '+self.message+' ('+self.date.__str__()+')'
+
+
 class Record(models.Model):
     rider = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE)
     record_name = models.CharField(max_length=128, null=False)
@@ -35,6 +46,7 @@ class Record(models.Model):
 
     def __str__(self):
         return self.record_name+' <- '+self.rider.__str__()+' || '+self.date.__str__()
+
 
 class Point(models.Model):
     x_coord = models.FloatField(null=False)
