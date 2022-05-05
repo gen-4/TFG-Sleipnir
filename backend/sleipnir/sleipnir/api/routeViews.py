@@ -14,7 +14,7 @@ from psycopg2 import IntegrityError
 from .models import Route, Point, Rider, Record, Message
 from .serializers import PointSerializer, RouteSerializer, GetRoutesSerializer
 from .serializers import RecordPointSerializer, RecordSerializer, RecordsSerializer
-from .serializers import GetRecordSerializer, MessageSerializer
+from .serializers import GetRecordSerializer, MessageSerializer, PostMessageSerializer
 
 
 @api_view(['POST'])
@@ -206,4 +206,19 @@ def getMessages(request, routeId):
 
     message_serializer = MessageSerializer(messages, many=True)
 
+    return Response(message_serializer.data, status=HTTP_200_OK)
+
+@api_view(['POST'])
+def postMessage(request, routeId):
+    route = Route.objects.get(pk=routeId)
+
+    message_serializer = PostMessageSerializer(data=request.data)
+
+    if message_serializer.is_valid():
+        message = Message(**message_serializer.validated_data)
+        message.route = route
+
+        message.save()
+    
+    message_serializer = MessageSerializer(message)
     return Response(message_serializer.data, status=HTTP_200_OK)

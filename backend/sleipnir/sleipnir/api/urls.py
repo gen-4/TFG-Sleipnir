@@ -21,5 +21,6 @@ api_urls = [
         path('detailed_record/<recordId>', routeViews.getDetailedRecord, name='get_detailed_record'),
 
         path('<routeId>/messages', routeViews.getMessages, name='get_messages'),
+        path('<routeId>/post_message', routeViews.postMessage, name='post_message'),
     ])),
 ]

@@ -118,3 +118,9 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['writer', 'message', 'date']
+
+class PostMessageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Message
+        fields = ['writer', 'message']

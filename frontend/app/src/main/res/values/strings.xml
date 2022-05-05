@@ -62,4 +62,6 @@
     <string name="creator_label">Creator</string>
     <string name="show_chat_button">Access chat</string>
     <string name="you">You</string>
+    <string name="message_hint">Write your message...</string>
+    <string name="message_send_btn">Send</string>
 </resources>

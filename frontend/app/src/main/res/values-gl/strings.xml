@@ -62,4 +62,6 @@
     <string name="creator_label">Creador</string>
     <string name="show_chat_button">Acceder ao chat</string>
     <string name="you">Ti</string>
+    <string name="message_hint">Escribe a túa mensaxe...</string>
+    <string name="message_send_btn">Enviar</string>
 </resources>
