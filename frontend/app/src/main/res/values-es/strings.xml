@@ -64,4 +64,10 @@
     <string name="you">Tú</string>
     <string name="message_hint">Escribe tu mensaje...</string>
     <string name="message_send_btn">Enviar</string>
+
+    <string name="show_observers_title">Ver observadores</string>
+    <string name="observer_hint">Usuario de telegram del nuevo observador</string>
+    <string name="observer_save_btn">Añadir</string>
+    <string name="delete_observer">Eliminar</string>
+
 </resources>

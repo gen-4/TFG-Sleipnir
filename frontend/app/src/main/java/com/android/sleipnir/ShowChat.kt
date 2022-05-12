@@ -1,4 +1,4 @@
-package com.android.sleipnir.ui
+package com.android.sleipnir
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
@@ -7,13 +7,10 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
-import android.widget.TextView
 import com.android.sleipnir.ui.util.ChatItemAdapter
-import com.android.sleipnir.R
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import org.json.JSONArray
 import org.json.JSONObject
 
 class ShowChat : AppCompatActivity() {
@@ -28,6 +25,8 @@ class ShowChat : AppCompatActivity() {
 
         val messageList: ArrayList<JSONObject> = ArrayList()
         val adapter = ChatItemAdapter(this, messageList)
+        val list: ListView = findViewById(R.id.chat_container)
+        list.adapter = adapter
 
 
         val sendButton: Button = findViewById(R.id.message_send_btn)
@@ -46,25 +45,14 @@ class ShowChat : AppCompatActivity() {
                 { response ->
 
                     val userId = sharedPref.getInt("userId", -1)
-                    val writer = response.getJSONObject("writer")
-                    val writerId = writer.getInt("id")
                     val creatorId = intent.getIntExtra("creator", -1)
 
-                    if (writerId == userId) {
-                        if (creatorId == userId)
-                            response.put("type", 0)
+                    if (creatorId == userId)
+                        response.put("type", 0)
 
-                        else
-                            response.put("type", 1)
+                    else
+                        response.put("type", 1)
 
-                    } else {
-                        if (creatorId == writerId)
-                            response.put("type", 2)
-
-                        else
-                            response.put("type", 3)
-
-                    }
 
                     messageList.add(response)
                     adapter.notifyDataSetChanged()
@@ -86,7 +74,7 @@ class ShowChat : AppCompatActivity() {
 
             queue.add(jsonObjectRequest)
 
-            sendButton.text = ""
+            msgInput.text.clear()
         }
 
 
@@ -105,26 +93,25 @@ class ShowChat : AppCompatActivity() {
                     val creatorId = intent.getIntExtra("creator", -1)
 
                     if (writerId == userId) {
-                        if (creatorId == userId)
+                        if (creatorId == userId) {
                             message.put("type", 0)
 
-                        else
+                        } else {
                             message.put("type", 1)
-
+                        }
                     } else {
-                        if (creatorId == writerId)
+                        if (creatorId == writerId) {
                             message.put("type", 2)
 
-                        else
+                        } else {
                             message.put("type", 3)
-
+                        }
                     }
 
                     messageList.add(message)
                 }
 
-                val list: ListView = findViewById(R.id.chat_container)
-                list.adapter = adapter
+                adapter.notifyDataSetChanged()
             },
             { error ->
                 Log.d("error", error.toString())

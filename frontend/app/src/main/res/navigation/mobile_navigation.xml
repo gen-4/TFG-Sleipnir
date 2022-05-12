@@ -29,4 +29,10 @@
         android:name="com.android.sleipnir.ui.show_register.ShowRegister"
         android:label="@string/title_show_register"
         tools:layout="@layout/fragment_show_register" />
+
+    <fragment
+        android:id="@+id/nav_show_observers"
+        android:name="com.android.sleipnir.ui.observer.ShowObserversFragment"
+        android:label="@string/show_observers_title"
+        tools:layout="@layout/fragment_show_observers" />
 </navigation>

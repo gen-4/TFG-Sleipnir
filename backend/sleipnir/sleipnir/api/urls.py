@@ -9,6 +9,9 @@ api_urls = [
         path('signup', riderViews.signup, name='signup'),
         path('login', riderViews.login, name='login'),
         path('<id>', riderViews.getRider, name='get_rider'),
+        path('<id>/observers', riderViews.getRiderObservers, name='get_rider_observers'),
+        path('<id>/add_observer', riderViews.addObserver, name='add_observer'),
+        path('<userId>/delete_observer/<id>', riderViews.deleteObserver, name='delete_observer'),
     ])),
     path('route/', include([
         path('create_route', routeViews.createRoute, name='create_route'),

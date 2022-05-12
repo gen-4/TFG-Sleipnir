@@ -14,8 +14,9 @@ from psycopg2 import IntegrityError
 
 from django.contrib.auth.models import User
 
-from .models import Rider
+from .models import Observer, Rider
 from .serializers import RiderSignupSerializer, UserLoginSerializer, RiderSerializer
+from .serializers import ObserverSerializer, AddObserverSerializer
 
 # Create your views here.
 
@@ -83,3 +84,57 @@ def getRider(request, id):
 
     rider_serializer = RiderSerializer(rider)
     return Response(rider_serializer.data, status = HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getRiderObservers(request, id):
+
+    try:
+        rider = Rider.objects.get(pk=id)
+    
+    except:
+        return Response({'detail': 'User not found'}, status = HTTP_404_NOT_FOUND)
+
+    observers = Observer.objects.filter(rider=rider)
+    observer_serializer = ObserverSerializer(observers, many=True)
+
+    return Response(observer_serializer.data, status=HTTP_200_OK)
+
+@api_view(['POST'])
+def addObserver(request, id):
+
+    try:
+        rider = Rider.objects.get(pk=id)
+    
+    except:
+        return Response({'detail': 'User not found'}, status = HTTP_404_NOT_FOUND)
+
+    observer = None
+    observer_serializer = AddObserverSerializer(data=request.data)
+    if observer_serializer.is_valid():
+        observer = Observer(**observer_serializer.validated_data)
+        observer.rider = rider
+        observer.save()
+
+    else:
+        return Response({'detail': 'Validation error'}, status=HTTP_400_BAD_REQUEST)
+
+    observer_serializer = ObserverSerializer(observer)
+    return Response(observer_serializer.data, status=HTTP_200_OK)
+
+@api_view(['POST'])
+def deleteObserver(request, userId, id):
+
+    try:
+        rider = Rider.objects.get(pk=userId)
+        observer = Observer.objects.get(pk=id)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    if observer.rider != rider:
+        return Response({'detail': 'Forbidden, you have not permission'}, status=HTTP_400_BAD_REQUEST)
+    
+    observer.delete()
+
+    return Response({'detail': f'Observer {id} deleted'}, status=HTTP_200_OK)

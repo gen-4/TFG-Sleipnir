@@ -14,6 +14,14 @@ class Rider(models.Model):
         return self.user.username+'('+self.id.__str__()+')'
 
 
+class Observer(models.Model):
+    telegram_user = models.CharField(max_length=16, unique=False, null=False)
+    rider = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE, related_name="rider_observer")
+
+    def __str__(self):
+        return self.telegram_user.__str__() + ' -> ' + self.rider.__str__()
+
+
 class Route(models.Model):
     creator = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE)
     route_name = models.CharField(max_length=128, unique=True, null=False)

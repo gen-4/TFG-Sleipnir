@@ -64,4 +64,10 @@
     <string name="you">Ti</string>
     <string name="message_hint">Escribe a túa mensaxe...</string>
     <string name="message_send_btn">Enviar</string>
+
+    <string name="show_observers_title">Ver observadores</string>
+    <string name="observer_hint">Usuario de telegram do novo observador</string>
+    <string name="observer_save_btn">Engadir</string>
+    <string name="delete_observer">Eliminar</string>
+
 </resources>

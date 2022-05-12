@@ -21,5 +21,9 @@
             android:id="@+id/nav_show_register"
             android:title="@string/title_show_register" />
 
+        <item
+            android:id="@+id/nav_show_observers"
+            android:title="@string/show_observers_title" />
+
     </group>
 </menu>

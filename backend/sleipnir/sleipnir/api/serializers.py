@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 
-from .models import Message, Rider, Route, Point, Record
+from .models import Message, Rider, Route, Point, Record, Observer
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required = True)
@@ -40,7 +40,7 @@ class RiderSignupSerializer(serializers.Serializer):
     def validate_telegram_user(self, value):
         if value:
             if not value.startswith('@'):
-                raise serializers.ValidationError("Wrong telegram user. It musts start by \'@\'")
+                raise serializers.ValidationError("Wrong telegram user. It musts start with \'@\'")
         return value
 
 
@@ -124,3 +124,21 @@ class PostMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['writer', 'message']
+
+class ObserverSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Observer
+        fields = ['id', 'telegram_user']
+
+class AddObserverSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Observer
+        fields = ['telegram_user']
+    
+    def validate_telegram_user(self, value):
+        if value:
+            if not value.startswith('@'):
+                raise serializers.ValidationError("Wrong telegram user. It musts start with \'@\'")
+        return value
