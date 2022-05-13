@@ -7,19 +7,14 @@ from django.contrib.auth.models import User
 
 class Rider(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    telegram_user = models.CharField(max_length=16, unique=True, null=True)
     is_admin = models.BooleanField(null=False, default=False)
+    last_x_coord = models.FloatField(null=True, default=None)
+    last_y_coord = models.FloatField(null=True, default=None)
+    observers = models.ManyToManyField('self')
 
     def __str__(self):
         return self.user.username+'('+self.id.__str__()+')'
 
-
-class Observer(models.Model):
-    telegram_user = models.CharField(max_length=16, unique=False, null=False)
-    rider = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE, related_name="rider_observer")
-
-    def __str__(self):
-        return self.telegram_user.__str__() + ' -> ' + self.rider.__str__()
 
 
 class Route(models.Model):

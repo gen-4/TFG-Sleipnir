@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
+import android.opengl.Visibility
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -13,6 +14,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.android.sleipnir.DrawerActivity
@@ -93,9 +96,21 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
     override fun onMarkerClick(p0: Marker): Boolean {
         val route = routeList.getJSONObject(markerList.indexOf(p0))
 
-        val intnt = Intent(requireContext(), JoinRouteActivity::class.java)
-        intnt.putExtra("route", route.toString())
-        startActivity(intnt)
+        p0.showInfoWindow()
+        val layout: View = requireActivity().findViewById(R.id.data_container)
+        layout.visibility = View.VISIBLE
+
+        val routeNameText: TextView = requireActivity().findViewById(R.id.route_name)
+        routeNameText.text = route.getString("route_name")
+        val celDateText: TextView = requireActivity().findViewById(R.id.celebration_date_text)
+        celDateText.text = route.getString("celebration_date").replace("T", " ")
+
+        val btn: Button = requireActivity().findViewById(R.id.detailed_btn)
+        btn.setOnClickListener {
+            val intnt = Intent(requireContext(), JoinRouteActivity::class.java)
+            intnt.putExtra("route", route.toString())
+            startActivity(intnt)
+        }
 
         return true
     }

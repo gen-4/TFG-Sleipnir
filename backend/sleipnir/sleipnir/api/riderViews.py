@@ -14,9 +14,9 @@ from psycopg2 import IntegrityError
 
 from django.contrib.auth.models import User
 
-from .models import Observer, Rider
+from .models import Rider
 from .serializers import RiderSignupSerializer, UserLoginSerializer, RiderSerializer
-from .serializers import ObserverSerializer, AddObserverSerializer
+from .serializers import ObserverSerializer
 
 # Create your views here.
 
@@ -52,24 +52,26 @@ def login(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,)) 
 def signup(request):
-    signup_serializer = RiderSignupSerializer(data = request.data)
+    signup_serializer = RiderSignupSerializer(data=request.data)
 
-    if not signup_serializer.is_valid():
-        return Response(signup_serializer.errors, status = HTTP_400_BAD_REQUEST)
 
-    data = signup_serializer.validated_data
+    
     try:
         with transaction.atomic():
-            user = User(**data['user'])
-            user.set_password(data['user']['password'])
+            if signup_serializer.is_valid():
+                user = User(**signup_serializer.validated_data['user'])
+                user.set_password(signup_serializer.validated_data['user']['password'])
+            else:
+                return Response(signup_serializer.errors, status = HTTP_400_BAD_REQUEST)
+
             user.save()
-            rider = Rider(user=user, telegram_user=data['telegram_user'])
+            rider = Rider(user=user)
             rider.save()
 
     except IntegrityError:
         return Response({'detail': 'User already created'}, status = HTTP_400_BAD_REQUEST)
 
-    rider_serializer = RiderSerializer(data=rider)
+    rider_serializer = RiderSerializer(rider)
 
     return Response(rider_serializer.data, status=HTTP_200_OK)
 
@@ -95,7 +97,7 @@ def getRiderObservers(request, id):
     except:
         return Response({'detail': 'User not found'}, status = HTTP_404_NOT_FOUND)
 
-    observers = Observer.objects.filter(rider=rider)
+    observers = rider.observers.all()
     observer_serializer = ObserverSerializer(observers, many=True)
 
     return Response(observer_serializer.data, status=HTTP_200_OK)
@@ -109,15 +111,12 @@ def addObserver(request, id):
     except:
         return Response({'detail': 'User not found'}, status = HTTP_404_NOT_FOUND)
 
-    observer = None
-    observer_serializer = AddObserverSerializer(data=request.data)
-    if observer_serializer.is_valid():
-        observer = Observer(**observer_serializer.validated_data)
-        observer.rider = rider
-        observer.save()
+    
+    user = User.objects.get(username=request.data["username"])
+    observer = Rider.objects.get(user=user)
 
-    else:
-        return Response({'detail': 'Validation error'}, status=HTTP_400_BAD_REQUEST)
+    rider.observers.add(observer)
+    rider.save()
 
     observer_serializer = ObserverSerializer(observer)
     return Response(observer_serializer.data, status=HTTP_200_OK)
@@ -127,14 +126,12 @@ def deleteObserver(request, userId, id):
 
     try:
         rider = Rider.objects.get(pk=userId)
-        observer = Observer.objects.get(pk=id)
+        observer = Rider.objects.get(pk=id)
     
     except:
         return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
 
-    if observer.rider != rider:
-        return Response({'detail': 'Forbidden, you have not permission'}, status=HTTP_400_BAD_REQUEST)
-    
-    observer.delete()
+    rider.observers.remove(observer)
+    rider.save()
 
     return Response({'detail': f'Observer {id} deleted'}, status=HTTP_200_OK)

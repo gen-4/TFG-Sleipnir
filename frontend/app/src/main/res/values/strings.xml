@@ -10,7 +10,6 @@
     <string name="password_input">Password</string>
     <string name="repeatedPassword_input">Repeat password</string>
     <string name="email_input">Email</string>
-    <string name="telegramUser_input">Telegram user</string>
 
     <string name="submit_button">Submit</string>
     <string name="signup_label">If not signed up, sign up here</string>
@@ -32,6 +31,9 @@
     <string name="create_route_instrucions">Build the route, then press the button to continue</string>
     <string name="create_rute_button">Proceed</string>
 
+
+
+    <string name="detailed_btn">Detailed</string>
 
     <string name="route_name">Route name</string>
     <string name="x_coord">X coordinate</string>
@@ -66,7 +68,7 @@
     <string name="message_send_btn">Send</string>
 
     <string name="show_observers_title">Show observers</string>
-    <string name="observer_hint">New observer telegram user</string>
+    <string name="observer_hint">New observer user</string>
     <string name="observer_save_btn">Add</string>
     <string name="delete_observer">Delete</string>
 

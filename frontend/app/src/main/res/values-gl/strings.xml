@@ -10,7 +10,6 @@
     <string name="password_input">Contrasinal</string>
     <string name="repeatedPassword_input">Repita o contrasinal</string>
     <string name="email_input">Email</string>
-    <string name="telegramUser_input">Usuario de telegram</string>
 
     <string name="submit_button">Enviar</string>
     <string name="signup_label">Se no estás rexistrado, rexístrate aquí</string>
@@ -32,6 +31,8 @@
     <string name="create_route_instrucions">Contrúe a ruta, despois preme o botón para continuar</string>
     <string name="create_rute_button">Continuar</string>
 
+
+    <string name="detailed_btn">Vista dellada</string>
 
     <string name="route_name">Nome da ruta</string>
     <string name="x_coord">Coordenada X</string>
@@ -66,7 +67,7 @@
     <string name="message_send_btn">Enviar</string>
 
     <string name="show_observers_title">Ver observadores</string>
-    <string name="observer_hint">Usuario de telegram do novo observador</string>
+    <string name="observer_hint">Usuario do novo observador</string>
     <string name="observer_save_btn">Engadir</string>
     <string name="delete_observer">Eliminar</string>
 

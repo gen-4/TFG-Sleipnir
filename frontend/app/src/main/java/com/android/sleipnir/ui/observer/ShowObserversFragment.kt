@@ -56,7 +56,7 @@ class ShowObserversFragment : Fragment() {
                 .plus("/add_observer")
 
             val jsonBody = JSONObject()
-            jsonBody.put("telegram_user", observerInput.text)
+            jsonBody.put("username", observerInput.text)
 
             val jsonObjectRequest = object: JsonObjectRequest(
                 Method.POST, url, jsonBody,

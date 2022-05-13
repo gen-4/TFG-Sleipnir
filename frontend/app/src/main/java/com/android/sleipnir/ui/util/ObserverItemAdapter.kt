@@ -50,7 +50,8 @@ class ObserverItemAdapter(context: Context, userId: Int, token: String, data: Ar
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val observer: JSONObject = data[position]
         val id = observer.getInt("id")
-        val user = observer.getString("telegram_user")
+        val userObj = observer.getJSONObject("user")
+        val user = userObj.getString("username")
 
 
         var vi: View? = convertView

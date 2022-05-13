@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.android.sleipnir.R
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.location.*
@@ -55,6 +56,8 @@ class RegisterRouteData : Fragment() {
 
     private var pointList = ArrayList<LatLng>()
     private val lineOptions = PolylineOptions()
+
+    private val observers = ArrayList<String>()
 
 
     companion object {
@@ -109,13 +112,67 @@ class RegisterRouteData : Fragment() {
         return inflater.inflate(R.layout.fragment_register_route_data, container, false)
     }
 
+    private fun getObservers() {
+
+        val queue = Volley.newRequestQueue(requireContext())
+        val sharedPref : SharedPreferences = requireContext().getSharedPreferences("userPreference",
+            AppCompatActivity.MODE_PRIVATE
+        )
+        val userId = sharedPref.getInt("userId", -1)
+        val token = sharedPref.getString("token", "")
+        var sureToken: String = ""
+
+        if (token != null)
+            sureToken = token
+
+        val url = "http://10.0.2.2:8000/user/".plus(userId)
+            .plus("/observers")
+        val jsonObjectRequest = object: JsonArrayRequest(
+            Method.GET, url, null,
+            { response ->
+
+                for (i in 0 until response.length()) {
+                    val observer = response.getJSONObject(i)
+
+                    observers.add(observer.getString("telegram_user"))
+                }
+
+            },
+            { error ->
+                Log.d("error", error.toString())
+            }
+        )
+        {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                if (token != null)
+                    headers["Authorization"] = "Token $token"
+                return headers
+            }
+        }
+
+        queue.add(jsonObjectRequest)
+
+
+    }
+
+
+
+    private fun sendNotifications() {
+        while (true) {
+            Thread.sleep(120000)
+        }
+    }
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
+        getObservers()
 
         recordName = requireActivity().findViewById(R.id.record_name)
         distanceText = requireActivity().findViewById(R.id.km_ridden)
@@ -158,6 +215,8 @@ class RegisterRouteData : Fragment() {
                 }
             }
 
+            val thrd = Thread {sendNotifications()}
+
             if (!isRecording) {
                 isRecording = true
                 isFirst = false
@@ -165,12 +224,19 @@ class RegisterRouteData : Fragment() {
                 chrono.start()
                 startBtn.text = getString(R.string.stop_record)
 
+                //Start thread
+                thrd.start()
+
                 fusedLocationClient.requestLocationUpdates(locRequest,
                     locationCallback,
                     Looper.getMainLooper())
 
             } else {
                 isRecording = false
+
+                //Kill thread
+                thrd.interrupt()
+
                 chrono.stop()
                 startBtn.text = getString(R.string.start_record)
                 fusedLocationClient.removeLocationUpdates(locationCallback)

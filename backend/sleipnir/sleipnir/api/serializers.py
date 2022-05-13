@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 
-from .models import Message, Rider, Route, Point, Record, Observer
+from .models import Message, Rider, Route, Point, Record
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required = True)
@@ -20,7 +20,7 @@ class RiderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Rider
-        fields = ['id', 'user', 'telegram_user']
+        fields = ['id', 'user']
 
 class UserSignup(serializers.ModelSerializer):
 
@@ -30,19 +30,6 @@ class UserSignup(serializers.ModelSerializer):
 
 class RiderSignupSerializer(serializers.Serializer):
     user = UserSignup()
-    telegram_user = serializers.CharField(
-        max_length=16, 
-        validators=[UniqueValidator(queryset=Rider.objects.all())],
-        required=True,
-        allow_null=True
-    )
-
-    def validate_telegram_user(self, value):
-        if value:
-            if not value.startswith('@'):
-                raise serializers.ValidationError("Wrong telegram user. It musts start with \'@\'")
-        return value
-
 
 
 
@@ -125,20 +112,16 @@ class PostMessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ['writer', 'message']
 
+
+class ObserverUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields=['username']
+
 class ObserverSerializer(serializers.ModelSerializer):
+    user = ObserverUserSerializer()
 
     class Meta:
-        model = Observer
-        fields = ['id', 'telegram_user']
-
-class AddObserverSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Observer
-        fields = ['telegram_user']
-    
-    def validate_telegram_user(self, value):
-        if value:
-            if not value.startswith('@'):
-                raise serializers.ValidationError("Wrong telegram user. It musts start with \'@\'")
-        return value
+        model = Rider
+        fields = ['id', 'user']
