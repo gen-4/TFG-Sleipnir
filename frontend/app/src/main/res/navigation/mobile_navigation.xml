@@ -35,4 +35,10 @@
         android:name="com.android.sleipnir.ui.observer.ShowObserversFragment"
         android:label="@string/show_observers_title"
         tools:layout="@layout/fragment_show_observers" />
+
+    <fragment
+        android:id="@+id/nav_show_observeds_ubication"
+        android:name="com.android.sleipnir.ui.check_observeds.ShowObserversUbicationFragment"
+        android:label="@string/show_observeds_ubication_title"
+        tools:layout="@layout/fragment_show_observers_ubication" />
 </navigation>

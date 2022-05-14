@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.sleipnir" >
+    package="com.android.sleipnir">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -15,13 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sleipnir"
-        android:usesCleartextTraffic="true" >
-        <activity
-            android:name=".showObserversActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ShowChat"
-            android:exported="false" />
+        android:usesCleartextTraffic="true">
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -37,6 +32,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
 
+
+        <activity
+            android:name=".ShowChat"
+            android:exported="false" />
         <activity
             android:name=".DetailedRegisterActivity"
             android:exported="false"
@@ -58,7 +57,7 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

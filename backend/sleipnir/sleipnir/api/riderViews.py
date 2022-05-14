@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 
 from .models import Rider
 from .serializers import RiderSignupSerializer, UserLoginSerializer, RiderSerializer
-from .serializers import ObserverSerializer
+from .serializers import ObserverSerializer, LastLocationSerializer, UpdateLastLocationSerializer
 
 # Create your views here.
 
@@ -135,3 +135,38 @@ def deleteObserver(request, userId, id):
     rider.save()
 
     return Response({'detail': f'Observer {id} deleted'}, status=HTTP_200_OK)
+
+@api_view(['GET'])
+def getObservedsLastLocation(request, userId):
+    try:
+        rider = Rider.objects.get(pk=userId)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    observeds = []
+    riders = Rider.objects.all()
+    for user in riders:
+        if rider in user.observers.all():
+            observeds.append(user)
+    observeds_serializer = LastLocationSerializer(observeds, many=True)
+
+    return Response(observeds_serializer.data, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+def updateLastLocation(request, userId):
+    try:
+        rider = Rider.objects.get(pk=userId)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    last_loc_serializer = UpdateLastLocationSerializer(data=request.data)
+    if last_loc_serializer.is_valid():
+        data = last_loc_serializer.validated_data
+        rider.last_x_coord = data['last_x_coord']
+        rider.last_y_coord = data['last_y_coord']
+        rider.save()
+
+    return Response({'detail': 'Last location updated'}, status=HTTP_200_OK)

@@ -12,6 +12,8 @@ api_urls = [
         path('<id>/observers', riderViews.getRiderObservers, name='get_rider_observers'),
         path('<id>/add_observer', riderViews.addObserver, name='add_observer'),
         path('<userId>/delete_observer/<id>', riderViews.deleteObserver, name='delete_observer'),
+        path('<userId>/observeds', riderViews.getObservedsLastLocation, name='observeds_last_location'),
+        path('<userId>/modify_last_location', riderViews.updateLastLocation, name='update_last_location'),
     ])),
     path('route/', include([
         path('create_route', routeViews.createRoute, name='create_route'),

@@ -10,7 +10,7 @@ class Rider(models.Model):
     is_admin = models.BooleanField(null=False, default=False)
     last_x_coord = models.FloatField(null=True, default=None)
     last_y_coord = models.FloatField(null=True, default=None)
-    observers = models.ManyToManyField('self')
+    observers = models.ManyToManyField('self', symmetrical=False)
 
     def __str__(self):
         return self.user.username+'('+self.id.__str__()+')'
@@ -24,7 +24,7 @@ class Route(models.Model):
     current_participants = models.DecimalField(default=1, null=False, max_digits=2, decimal_places=0)
     duration = models.DecimalField(null=False, max_digits=4, decimal_places=0)
     celebration_date = models.DateTimeField(null=False)
-    participants = models.ManyToManyField(to=Rider, related_name='rider_route')
+    participants = models.ManyToManyField(to=Rider, symmetrical=False, related_name='rider_route')
 
     def __str__(self):
         return self.route_name+' <- '+self.creator.__str__()+' || '+self.celebration_date.__str__()

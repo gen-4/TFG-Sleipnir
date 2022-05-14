@@ -62,6 +62,7 @@ class RegisterRouteData : Fragment() {
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
+        private const val DELAY_MINUTES = 2
     }
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -112,7 +113,9 @@ class RegisterRouteData : Fragment() {
         return inflater.inflate(R.layout.fragment_register_route_data, container, false)
     }
 
-    private fun getObservers() {
+
+
+    private fun sendNotifications() {
 
         val queue = Volley.newRequestQueue(requireContext())
         val sharedPref : SharedPreferences = requireContext().getSharedPreferences("userPreference",
@@ -126,41 +129,41 @@ class RegisterRouteData : Fragment() {
             sureToken = token
 
         val url = "http://10.0.2.2:8000/user/".plus(userId)
-            .plus("/observers")
-        val jsonObjectRequest = object: JsonArrayRequest(
-            Method.GET, url, null,
-            { response ->
+            .plus("/modify_last_location")
 
-                for (i in 0 until response.length()) {
-                    val observer = response.getJSONObject(i)
+        while (true) {
+            Thread.sleep((DELAY_MINUTES * 60000).toLong())
 
-                    observers.add(observer.getString("telegram_user"))
+            val currentLocation = fusedLocationClient.lastLocation.addOnSuccessListener(requireContext() as Activity) { location ->
+
+                if (location != null) {
+                    lastLocation = location
+                    val jsonObj = JSONObject()
+                    jsonObj.put("last_x_coord", location.longitude)
+                    jsonObj.put("last_y_coord", location.latitude)
+
+                    val jsonObjectRequest = object: JsonObjectRequest(
+                        Method.POST, url, jsonObj,
+                        { response ->
+
+                        },
+                        { error ->
+                            Log.d("error", error.toString())
+                        }
+                    )
+                    {
+                        override fun getHeaders(): MutableMap<String, String> {
+                            val headers = HashMap<String, String>()
+                            if (token != null)
+                                headers["Authorization"] = "Token $token"
+                            return headers
+                        }
+                    }
+
+                    queue.add(jsonObjectRequest)
                 }
 
-            },
-            { error ->
-                Log.d("error", error.toString())
             }
-        )
-        {
-            override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap<String, String>()
-                if (token != null)
-                    headers["Authorization"] = "Token $token"
-                return headers
-            }
-        }
-
-        queue.add(jsonObjectRequest)
-
-
-    }
-
-
-
-    private fun sendNotifications() {
-        while (true) {
-            Thread.sleep(120000)
         }
     }
 
@@ -172,7 +175,6 @@ class RegisterRouteData : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        getObservers()
 
         recordName = requireActivity().findViewById(R.id.record_name)
         distanceText = requireActivity().findViewById(R.id.km_ridden)

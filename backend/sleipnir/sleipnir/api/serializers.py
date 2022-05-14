@@ -125,3 +125,17 @@ class ObserverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rider
         fields = ['id', 'user']
+
+class LastLocationSerializer(serializers.ModelSerializer):
+    user = ObserverUserSerializer()
+
+    class Meta:
+        model = Rider
+        fields = ['user', 'last_x_coord', 'last_y_coord']
+
+
+class UpdateLastLocationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Rider
+        fields = ['last_x_coord', 'last_y_coord']

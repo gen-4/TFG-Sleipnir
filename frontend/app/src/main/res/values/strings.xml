@@ -72,4 +72,7 @@
     <string name="observer_save_btn">Add</string>
     <string name="delete_observer">Delete</string>
 
+    <string name="show_observeds_ubication_title">Show observeds ubication</string>
+    <string name="refresh_btn">Refresh</string>
+
 </resources>
