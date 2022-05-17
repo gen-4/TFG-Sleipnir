@@ -74,21 +74,15 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8sp"
-                    android:text="@string/max_participants_label"
-                    android:textColor="@color/textColor" />
 
-                <NumberPicker
+                <EditText
                     android:id="@+id/max_participants"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-60dp"
-                    android:layout_marginBottom="-60dp"
-                    android:scaleX="0.4"
-                    android:scaleY="0.4" />
+                    android:textColor="@color/textColor"
+                    android:hint="@string/max_participants_label"
+                    android:inputType="number" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -97,24 +91,15 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8sp"
-                    android:text="@string/duration_label"
-                    android:textColor="@color/textColor" />
 
-                <TimePicker
+                <EditText
                     android:id="@+id/duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="-50dp"
-                    android:layout_marginTop="-50dp"
-                    android:layout_marginEnd="-50dp"
-                    android:layout_marginBottom="-50dp"
-                    android:scaleX="0.5"
-                    android:scaleY="0.5"
-                    android:timePickerMode="spinner" />
+                    android:inputType="time"
+                    android:textColor="@color/textColor"
+                    android:hint="@string/duration_label"/>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
@@ -131,24 +116,27 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8sp"
-                        android:text="@string/date_picker_label"
-                        android:textColor="@color/textColor" />
 
-                    <DatePicker
+                    <EditText
                         android:id="@+id/date_picker"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-65dp"
-                        android:layout_marginTop="-65dp"
-                        android:layout_marginEnd="-65dp"
-                        android:layout_marginBottom="-65dp"
-                        android:scaleX="0.35"
-                        android:scaleY="0.35" />
+                        android:hint="@string/date_picker_label"
+                        android:inputType="datetime"
+                        android:textColor="@color/textColor" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="vertical">
+
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
@@ -156,25 +144,17 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8sp"
-                        android:text="@string/time_picker_label"
-                        android:textColor="@color/textColor" />
 
-                    <TimePicker
-                        android:id="@+id/time_picker"
+                    <Spinner
+                        android:id="@+id/horse_picker"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-50dp"
-                        android:layout_marginTop="-50dp"
-                        android:layout_marginEnd="-50dp"
-                        android:layout_marginBottom="-50dp"
-                        android:scaleX="0.50"
-                        android:scaleY="0.50"
-                        android:timePickerMode="spinner" />
+                        android:layout_margin="12dp"
+                        android:minWidth="300dp"
+                        android:textColor="@color/textColor" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>

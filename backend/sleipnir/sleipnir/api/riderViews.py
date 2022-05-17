@@ -8,15 +8,18 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND,
     HTTP_200_OK,
     HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN
 )
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
+from django.conf import settings
 
 from django.contrib.auth.models import User
 
-from .models import Rider
+from .models import Rider, Horse
 from .serializers import RiderSignupSerializer, UserLoginSerializer, RiderSerializer
 from .serializers import ObserverSerializer, LastLocationSerializer, UpdateLastLocationSerializer
+from .serializers import HorseSerializer, HorseAddSerializer
 
 # Create your views here.
 
@@ -170,3 +173,88 @@ def updateLastLocation(request, userId):
         rider.save()
 
     return Response({'detail': 'Last location updated'}, status=HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getRiderHorses(request, userId):
+    try:
+        rider = Rider.objects.get(pk=userId)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    horses = Horse.objects.filter(owner=rider)
+    horse_serializer = HorseSerializer(horses, many=True)
+    horses_list = horse_serializer.data
+    for horse in horses_list:
+        try:
+            horse['image'] = horse['image'].replace('/horse_images/', '')
+        except:
+            pass
+
+    return Response(horses_list, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+def deleteHorse(request, userId, horseId):
+    try:
+        rider = Rider.objects.get(pk=userId)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    horse = Horse.objects.get(pk=horseId)
+    if (rider != horse.owner):
+        return Response({'detail': 'Forbidden action'}, status=HTTP_403_FORBIDDEN)
+
+    horse.delete()
+
+    return Response({'detail': f'Horse {horseId} deleted'}, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+def addHorse(request, userId):
+    try:
+        rider = Rider.objects.get(pk=userId)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    horse_serializer = HorseAddSerializer(data=request.data)
+
+    horse = None
+    if horse_serializer.is_valid():
+        horse = Horse(**horse_serializer.validated_data)
+        horse.owner = rider
+    
+    horse.save()
+
+    horse_serializer = HorseSerializer(horse)
+
+    return Response(horse_serializer.data, status=HTTP_200_OK)
+
+@api_view(['POST'])
+def addHorseImage(request, userId, horseId):
+
+    print("!!!!!!!!!!")
+    print
+    print(request.data)
+    print
+    print("!!!!!!!!!!!!")
+
+
+
+    try:
+        rider = Rider.objects.get(pk=userId)
+        horse = Horse.objects.get(pk=horseId)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    if (rider != horse.owner):
+        return Response({'detail': 'Forbidden action'}, status=HTTP_403_FORBIDDEN)
+
+    horse.image = request.data
+    horse.save()
+
+    return Response(status=HTTP_200_OK)

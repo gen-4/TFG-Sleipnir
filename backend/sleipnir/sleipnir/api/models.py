@@ -1,5 +1,7 @@
+from distutils.command.upload import upload
 from enum import unique
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import User
 
@@ -16,15 +18,48 @@ class Rider(models.Model):
         return self.user.username+'('+self.id.__str__()+')'
 
 
+def validate_positive(value):
+    if value < 1:
+        raise ValidationError(
+            (f'{value}s is not a valid year'),
+            params={'value': value},
+        )
+
+class Horse(models.Model):
+    owner = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE, related_name='rider_horse')
+    name = models.CharField(max_length=128, unique=True, null=False)
+    height = models.FloatField(null=False)
+    weight = models.FloatField(null=False)
+    coat = models.IntegerField(null=False, choices=[
+        (0, 'White'), (1, 'Black'), (2, 'Brown'), (3, 'Sorrel'), (4, 'Trush'), 
+        (5, 'Appaloosa'), (6, 'Overo'), (7, 'Roan'), (8, 'Bay'), (9, 'Elizabethan')
+        ])
+    breed = models.CharField(max_length=64, null=False, choices=[
+        ('Andaluz (PRE)', 'Andaluz (PRE)'), ('Pura Raza Inglesa', 'Pura Raza Inglesa'),
+        ('Pura Raza Galega', 'Pura Raza Galega'), ('Árabe', 'Árabe'), ('Akhal-Teke', 'Akhal-Teke'),
+        ('Cuarto de milla', 'Cuarto de milla'), ('Appaloosa', 'Appaloosa'), ('Azteca', 'Azteca'), 
+        ('Paso Peruano', 'Paso Peruano'), ('Painted Horse', 'Painted Horse'), ('Paso Tennessee','Paso Tennessee'), 
+        ('Mustang', 'Mustang'), ('Shire', 'Shire'), ('Frisón', 'Frisón'), ('Percherón', 'Percherón'), 
+        ('Marwari', 'Marwari'), ('Lusitano', 'Lusitano'), ('Bretón', 'Bretón'), ('Bereber', 'Bereber'), 
+        ('Criollo', 'Criollo'), ('Gelder', 'Gelder'), ('Hannoveriano', 'Hannoveriano'), ('Hispano-Árabe', 'Hispano-Árabe'), 
+        ('Kentucky Mountain', 'Kentucky Mountain'), ('Lipizzano', 'Lipizzano'), ('Mongol', 'Mongol'), ('Morgan', 'Morgan'), ('Przewalski', 'Przewalski')
+    ])
+    gender = models.IntegerField(null=False, choices=[(0, 'Stallion'), (1, 'Gelding'), (2, 'Mare')])
+    age = models.IntegerField(null=False, validators=[validate_positive])
+    image = models.ImageField(upload_to='horse_images', null=True)
+
+    def __str__(self):
+        return self.name + ' (' + self.breed + ') <- ' + self.owner.__str__()
+
 
 class Route(models.Model):
-    creator = models.ForeignKey(Rider, null=False, default=0, on_delete=models.CASCADE)
+    creator = models.ForeignKey(Rider, null=False, on_delete=models.CASCADE)
     route_name = models.CharField(max_length=128, unique=True, null=False)
     max_participants = models.DecimalField(default=50, null=False, max_digits=2, decimal_places=0)
     current_participants = models.DecimalField(default=1, null=False, max_digits=2, decimal_places=0)
     duration = models.DecimalField(null=False, max_digits=4, decimal_places=0)
     celebration_date = models.DateTimeField(null=False)
-    participants = models.ManyToManyField(to=Rider, symmetrical=False, related_name='rider_route')
+    participants = models.ManyToManyField(Horse, symmetrical=False, related_name='rider_route')
 
     def __str__(self):
         return self.route_name+' <- '+self.creator.__str__()+' || '+self.celebration_date.__str__()

@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:background="@color/secondary"
             android:orientation="vertical"
-            android:padding="12dp"
+            android:padding="2dp"
             android:gravity="center">
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5sp"
                         android:textColor="@color/textColor"
-                        android:text="@string/date_picker_label"/>
+                        android:text="@string/celebration_label"/>
                     <TextView
                         android:id="@+id/date_text"
                         android:layout_width="wrap_content"
@@ -130,7 +130,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5sp"
                         android:textColor="@color/textColor"
-                        android:text="@string/duration_label"/>
+                        android:text="@string/duration_time_label"/>
                     <TextView
                         android:id="@+id/duration_text"
                         android:layout_width="wrap_content"
@@ -140,14 +140,38 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <Button
-                android:id="@+id/show_chat_button"
+            <Spinner
+                android:id="@+id/horse_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/primary"
-                android:textColor="@color/textColor"
-                android:layout_marginBottom="5dp"
-                android:text="@string/show_chat_button" />
+                android:layout_margin="4dp"
+                android:minWidth="300dp"
+                android:textColor="@color/textColor" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <Button
+                    android:id="@+id/show_participants_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/primary"
+                    android:textColor="@color/textColor"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/show_participants_button" />
+
+                <Button
+                    android:id="@+id/show_chat_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/primary"
+                    android:textColor="@color/textColor"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/show_chat_button" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <Button
                 android:id="@+id/join_button"

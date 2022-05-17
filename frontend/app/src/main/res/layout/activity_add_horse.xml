@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary"
+    android:padding="55dp"
+    tools:context=".AddHorseActivity">
+
+    <EditText
+        android:id="@+id/horse_name_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        android:hint="@string/horse_name_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/horse_height_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        android:hint="@string/horse_height_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_name_input"/>
+
+    <EditText
+        android:id="@+id/horse_weight_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        android:hint="@string/horse_weight_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_height_input"/>
+
+    <EditText
+        android:id="@+id/horse_age_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        android:hint="@string/horse_age_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_weight_input"/>
+
+    <Spinner
+        android:id="@+id/horse_coat_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_age_input" />
+
+    <Spinner
+        android:id="@+id/horse_gender_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_coat_input" />
+
+    <Spinner
+        android:id="@+id/horse_breed_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:minWidth="300dp"
+        android:textColor="@color/textColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_gender_input" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/image_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="300dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horse_breed_input" >
+
+        <ImageView
+            android:id="@+id/horse_image_picker"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY" />
+
+        <Button
+            android:id="@+id/horse_image_picker_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:textColor="@color/textColor"
+            android:layout_marginStart="4dp"
+            android:text="@string/image_picker_btn" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <Button
+        android:id="@+id/save_horse_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@color/primary"
+        android:textColor="@color/textColor"
+        android:text="@string/observer_save_btn"
+        app:layout_constraintTop_toBottomOf="@+id/image_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 
-from .models import Message, Rider, Route, Point, Record
+from .models import Horse, Message, Rider, Route, Point, Record
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required = True)
@@ -139,3 +139,23 @@ class UpdateLastLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rider
         fields = ['last_x_coord', 'last_y_coord']
+
+
+class HorseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Horse
+        fields = '__all__'
+
+class HorseAddSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Horse
+        exclude = ('image',)
+
+class HorseParticipantsSerializer(serializers.ModelSerializer):
+    owner = ObserverSerializer()
+
+    class Meta:
+        model = Horse
+        fields = '__all__'

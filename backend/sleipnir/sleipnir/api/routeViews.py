@@ -11,27 +11,33 @@ from rest_framework.status import (
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
 
-from .models import Route, Point, Rider, Record, Message
+from .models import Route, Point, Rider, Record, Message, Horse
 from .serializers import PointSerializer, RouteSerializer, GetRoutesSerializer
 from .serializers import RecordPointSerializer, RecordSerializer, RecordsSerializer
 from .serializers import GetRecordSerializer, MessageSerializer, PostMessageSerializer
+from .serializers import HorseParticipantsSerializer
 
 
 @api_view(['POST'])
 def createRoute(request):
     json_data = request.data
     points_array = json_data.pop('points')
+    horseId = json_data.pop('horse')
+    
+    horse = Horse.objects.get(pk=horseId)
+    
 
-    route_serializer = RouteSerializer(data = json_data)
+    route_serializer = RouteSerializer(data=json_data)
     route_data = {}
-
+    
     with transaction.atomic():
         try:
             if route_serializer.is_valid():
                 route_data = route_serializer.validated_data
             
             route = Route(**route_data)
-            route.participants.add(Rider.objects.get(pk=route.creator))
+            route.save()
+            route.participants.add(horse)
             route.save()
         
         except IntegrityError:
@@ -40,9 +46,8 @@ def createRoute(request):
         
         route_serializer = RouteSerializer(route)
         route_id = route_serializer.data['id']
-
-        points_array_dict = json.loads(points_array)
-        for point in points_array_dict:
+        
+        for point in points_array:
             point['route'] = route_id
             point_serializer = PointSerializer(data = point)
             
@@ -77,6 +82,8 @@ def getRoutes(request):
 @api_view(['POST'])
 def joinRoute(request, routeId):
     data = request.data
+    horseId = data.pop('horse')
+    horse = Horse.objects.get(pk=horseId)
     
     rider = Rider.objects.get(pk=data['user'])
     route = Route.objects.get(pk=routeId)
@@ -88,7 +95,7 @@ def joinRoute(request, routeId):
         return Response({'detail': 'Unable to join route: Already joined'}, status=HTTP_400_BAD_REQUEST)
 
     route.current_participants += 1
-    route.participants.add(rider)
+    route.participants.add(horse)
 
     try:
         route.save()
@@ -112,7 +119,12 @@ def leaveRoute(request, routeId):
         return Response({'detail': 'Unable to leave route: Never joined'}, status=HTTP_400_BAD_REQUEST)
 
     route.current_participants -= 1
-    route.participants.remove(rider)
+
+    horses = route.participants.all()
+    rider_horses = Horse.objects.filter(owner=rider)
+    for horse in rider_horses:
+        if horse in horses:
+            route.participants.remove(horse) 
 
     try:
         route.save()
@@ -134,11 +146,15 @@ def hasJoined(request, routeId, userId):
     if rider == route.creator:
         return Response({'joined': 0}, HTTP_200_OK)
 
-    elif rider in route.participants.all():
-        return Response({'joined': 1}, HTTP_200_OK)
-
     else:
-        return Response({'joined': -1}, HTTP_200_OK)
+        horses = route.participants.all()
+        rider_horses = Horse.objects.filter(owner=rider)
+        for horse in rider_horses:
+            if horse in horses:
+                return Response({'joined': 1}, HTTP_200_OK)
+
+            
+    return Response({'joined': -1}, HTTP_200_OK)
 
 @api_view(['POST'])
 def registerRouteData(request):
@@ -222,3 +238,18 @@ def postMessage(request, routeId):
     
     message_serializer = MessageSerializer(message)
     return Response(message_serializer.data, status=HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getParticipants(request, routeId):
+    route = Route.objects.get(pk=routeId)
+
+    horse_serializer = HorseParticipantsSerializer(route.participants, many=True)
+    horses = horse_serializer.data
+    for horse in horses:
+        try:
+            horse['image'] = horse['image'].replace('/horse_images/', '')
+        except:
+            pass
+
+    return Response(horse_serializer.data, status=HTTP_200_OK)

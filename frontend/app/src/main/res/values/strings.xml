@@ -32,15 +32,16 @@
     <string name="create_rute_button">Proceed</string>
 
 
-
     <string name="detailed_btn">Detailed</string>
 
     <string name="route_name">Route name</string>
     <string name="x_coord">X coordinate</string>
     <string name="y_coord">Y coordinate</string>
     <string name="max_participants_label">Max number of participants</string>
-    <string name="duration_label">Duration</string>
-    <string name="date_picker_label">Celebration date</string>
+    <string name="duration_label">Duration (minutes)</string>
+    <string name="duration_time_label">Duration</string>
+    <string name="date_picker_label">Celebration  (YYYY-MM-DD hh:mm)</string>
+    <string name="celebration_label">Celebration date</string>
     <string name="time_picker_label">Celebration time</string>
     <string name="curr_participants_label">Current participants</string>
 
@@ -74,5 +75,39 @@
 
     <string name="show_observeds_ubication_title">Show observeds ubication</string>
     <string name="refresh_btn">Refresh</string>
+
+    <string name="my_horses_title">My horses</string>
+    <string name="add_horse_btn">Add new horse</string>
+
+    <string name="black_coat">Black</string>
+    <string name="brown_coat">Brown</string>
+    <string name="sorrel_coat">Sorrel</string>
+    <string name="thrush_coat">Thrush</string>
+    <string name="appaloosa_coat">Appaloosa</string>
+    <string name="overo_coat">Overo</string>
+    <string name="roan_coat">Roan</string>
+    <string name="bay_coat">Bay</string>
+    <string name="white_coat">White</string>
+    <string name="elizabethan_coat">Elizabethan</string>
+
+    <string name="stallion">Stallion</string>
+    <string name="gelding">Gelding</string>
+    <string name="mare">Mare</string>
+
+    <string name="horse_name_hint">Horse name</string>
+    <string name="horse_height_hint">Horse height (cm)</string>
+    <string name="horse_weight_hint">Horse weight (kg)</string>
+    <string name="horse_age_hint">Horse age</string>
+    <string name="image_picker_btn">Select image</string>
+
+    <string name="horse_height_label">Height</string>
+    <string name="horse_weight_label">Weight</string>
+    <string name="horse_age_label">Age</string>
+    <string name="horse_coat_label">Coat</string>
+    <string name="horse_gender_label">Gender</string>
+    <string name="horse_breed_label">Breed</string>
+
+    <string name="owner_label">Owner:</string>
+    <string name="show_participants_button">Participants</string>
 
 </resources>
