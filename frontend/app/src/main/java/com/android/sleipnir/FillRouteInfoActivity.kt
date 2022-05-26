@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -31,6 +32,58 @@ class FillRouteInfoActivity : AppCompatActivity() {
     private lateinit var maxParcipants: EditText
     private lateinit var date: EditText
 
+    private lateinit var horseJson: JSONArray
+    var horseId = -1
+
+
+    private fun onResponse(horses: List<String>) {
+        val horseSpinner: Spinner = findViewById(R.id.horse_picker)
+        val horseAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, horses)
+        horseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        horseSpinner.adapter = horseAdapter
+
+
+
+        horseSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+
+                horseId = horseJson.getJSONObject(position).getInt("id")
+            }
+        }
+    }
+
+    private fun getHorses(queue: RequestQueue, userId: Int, token: String) {
+        val horses = ArrayList<String>()
+
+        val url = "http://10.0.2.2:8000/user/".plus(userId)
+            .plus("/horses")
+        val jsonObjectRequest = object: JsonArrayRequest(
+            Method.GET, url, null,
+            { response ->
+                horseJson = response
+                for (i in 0 until response.length()) {
+                    horses.add(response.getJSONObject(i).getString("name"))
+                }
+                onResponse(horses.toList())
+            },
+            { error ->
+                Log.d("error", error.toString())
+            }
+        )
+        {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Token $token"
+                return headers
+            }
+        }
+
+        queue.add(jsonObjectRequest)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,58 +102,16 @@ class FillRouteInfoActivity : AppCompatActivity() {
 
         val queue = Volley.newRequestQueue(this)
 
-        var horseJson = JSONArray()
-        var horseId = -1
-        val horses = ArrayList<String>()
+
+
         val userId = sharedPref.getInt("userId", -1)
         val token = sharedPref.getString("token", "")
-        var sureToken: String = ""
+        var sureToken = ""
+
         if (token != null)
             sureToken = token
 
-        val url = "http://10.0.2.2:8000/user/".plus(userId)
-            .plus("/horses")
-        val jsonObjectRequest = object: JsonArrayRequest(
-            Method.GET, url, null,
-            { response ->
-                horseJson = response
-                for (i in 0 until response.length()) {
-                    horses.add(response.getJSONObject(i).getString("name"))
-                }
-            },
-            { error ->
-                Log.d("error", error.toString())
-            }
-        )
-        {
-            override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap<String, String>()
-                if (token != null)
-                    headers["Authorization"] = "Token $token"
-                return headers
-            }
-        }
-
-        queue.add(jsonObjectRequest)
-
-
-        val horseSpinner: Spinner = findViewById(R.id.horse_picker)
-        val horseAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, horses)
-        horseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        horseSpinner.adapter = horseAdapter
-
-
-
-        horseSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-
-                horseId = horseJson.getJSONObject(position).getInt("id")
-            }
-        }
+        getHorses(queue, userId, sureToken)
 
 
 

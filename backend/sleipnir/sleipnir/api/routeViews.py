@@ -1,5 +1,7 @@
 import json
+from math import sqrt
 from datetime import datetime
+from multiprocessing.sharedctypes import Value
 from django.db import transaction
 from rest_framework.decorators import api_view
 from rest_framework.status import (
@@ -7,6 +9,7 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND,
     HTTP_200_OK,
     HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN
 )
 from rest_framework.response import Response
 from psycopg2 import IntegrityError
@@ -28,37 +31,34 @@ def createRoute(request):
     
 
     route_serializer = RouteSerializer(data=json_data)
-    route_data = {}
     
+    route = None
+
     with transaction.atomic():
         try:
             if route_serializer.is_valid():
-                route_data = route_serializer.validated_data
+                route = Route(**route_serializer.validated_data)
+                route.save()    
+                route.participants.add(horse)
+                route.save()
             
-            route = Route(**route_data)
-            route.save()
-            route.participants.add(horse)
-            route.save()
+            
         
         except IntegrityError:
             return Response({'detail': 'Route creation failed'}, status=HTTP_400_BAD_REQUEST)
 
-        
-        route_serializer = RouteSerializer(route)
-        route_id = route_serializer.data['id']
-        
-        for point in points_array:
-            point['route'] = route_id
+   
+        json_points = json.loads(points_array)
+
+        for point in json_points:
+            point['route'] = route.id
             point_serializer = PointSerializer(data = point)
             
-            data = {}
-
             try:
                 if point_serializer.is_valid():
-                    data = point_serializer.validated_data
+                    point = Point(**point_serializer.validated_data)
+                    point.save()
                     
-                point = Point(**data)
-                point.save()
             except IntegrityError:
                 return Response({'detail': 'Route creation failed: Unable to save a point'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -71,10 +71,7 @@ def getRoutes(request):
     route_serializer = GetRoutesSerializer(routes_list, many=True)
     routes_list = route_serializer.data
     
-    for route in routes_list:
-        
-        if datetime.strptime(route['celebration_date'], '%Y-%m-%dT%H:%M:%S') <= datetime.now():
-            routes_list.remove(route)
+    routes_list[:] = [route for route in routes_list if not (datetime.strptime(route['celebration_date'], '%Y-%m-%dT%H:%M:%S') <= datetime.now())]
 
     return Response(routes_list, status=HTTP_200_OK)
 
@@ -84,14 +81,12 @@ def joinRoute(request, routeId):
     data = request.data
     horseId = data.pop('horse')
     horse = Horse.objects.get(pk=horseId)
-    
-    rider = Rider.objects.get(pk=data['user'])
     route = Route.objects.get(pk=routeId)
 
     if route.current_participants >= route.max_participants:
         return Response({'detail': 'Unable to join route: Max number of participants reached'}, status=HTTP_400_BAD_REQUEST)
 
-    elif rider in route.participants.all():
+    elif horse in route.participants.all():
         return Response({'detail': 'Unable to join route: Already joined'}, status=HTTP_400_BAD_REQUEST)
 
     route.current_participants += 1
@@ -114,9 +109,6 @@ def leaveRoute(request, routeId):
 
     rider = Rider.objects.get(pk=data['user'])
     route = Route.objects.get(pk=routeId)
-
-    if rider not in route.participants.all():
-        return Response({'detail': 'Unable to leave route: Never joined'}, status=HTTP_400_BAD_REQUEST)
 
     route.current_participants -= 1
 
@@ -253,3 +245,43 @@ def getParticipants(request, routeId):
             pass
 
     return Response(horse_serializer.data, status=HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getPastRoutes(request):
+    routes_list = Route.objects.all()
+    route_serializer = GetRoutesSerializer(routes_list, many=True)
+    routes_list = route_serializer.data
+
+    routes_list[:] = [route for route in routes_list if not (datetime.strptime(route['celebration_date'], '%Y-%m-%dT%H:%M:%S') >= datetime.now())]
+
+    return Response(routes_list, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+def updateRoute(request, routeId):
+    data = request.data
+    horseId = data.pop('horse')
+    horse = Horse.objects.get(pk=horseId)
+    route = Route.objects.get(pk=routeId)
+
+    if route.celebration_date >= datetime.now():
+        return Response({'detail': 'Forbidden, route still in progress'}, status=HTTP_403_FORBIDDEN)
+
+    route.current_participants = 1
+    route.participants.set([horse])
+    try:
+        route.celebration_date = datetime.strptime(data['celebration_date'], '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        route.celebration_date = datetime.strptime(data['celebration_date'], '%Y-%m-%dT%H:%M')
+    route.max_participants = data['max_participants']
+
+    try:
+        route.save()
+        
+    except IntegrityError:
+        return Response({'detail': 'Unable to join route'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    route_serializer = RouteSerializer(route)
+
+    return Response(route_serializer.data, status=HTTP_200_OK)

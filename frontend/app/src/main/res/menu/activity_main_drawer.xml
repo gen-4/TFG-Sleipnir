@@ -33,5 +33,9 @@
             android:id="@+id/nav_show_horses"
             android:title="@string/my_horses_title" />
 
+        <item
+            android:id="@+id/nav_historic_by_distance"
+            android:title="@string/historic_by_distance_title" />
+
     </group>
 </menu>

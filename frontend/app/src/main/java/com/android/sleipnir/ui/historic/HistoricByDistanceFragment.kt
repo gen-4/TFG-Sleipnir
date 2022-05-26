@@ -1,4 +1,4 @@
-package com.android.sleipnir.ui.show_routes
+package com.android.sleipnir.ui.historic
 
 import android.Manifest
 import android.app.Activity
@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
-import android.opengl.Visibility
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -15,16 +14,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.android.sleipnir.DrawerActivity
-import com.android.sleipnir.FillRouteInfoActivity
 import com.android.sleipnir.JoinRouteActivity
 import com.android.sleipnir.R
-import com.android.volley.Request
+import com.android.sleipnir.UpdatePastRouteActivity
+import com.android.sleipnir.ui.show_routes.ShowRoutes
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -33,7 +31,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -41,7 +38,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.ArrayList
 
-class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
+class HistoricByDistanceFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
 
@@ -50,6 +47,9 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
 
     private var markerList = ArrayList<Marker>()
     private lateinit var routeList: JSONArray
+
+    private lateinit var numberPick: EditText
+    private lateinit var updateBtn: Button
 
 
     companion object {
@@ -64,6 +64,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
 
         setUpMap()
     }
+
 
     private fun setUpMap() {
 
@@ -102,12 +103,10 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
 
         val routeNameText: TextView = requireActivity().findViewById(R.id.route_name)
         routeNameText.text = route.getString("route_name")
-        val celDateText: TextView = requireActivity().findViewById(R.id.celebration_date_text)
-        celDateText.text = route.getString("celebration_date").replace("T", " ")
 
         val btn: Button = requireActivity().findViewById(R.id.detailed_btn)
         btn.setOnClickListener {
-            val intnt = Intent(requireContext(), JoinRouteActivity::class.java)
+            val intnt = Intent(requireContext(), UpdatePastRouteActivity::class.java)
             intnt.putExtra("route", route.toString())
             startActivity(intnt)
         }
@@ -123,20 +122,52 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
             markerList.add(marker)
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_show_routes, container, false)
+        return inflater.inflate(R.layout.fragment_historic_by_distance, container, false)
     }
+
+
+    private fun onDistanceUpdate() {
+        markerList.clear()
+        mMap.clear()
+
+        var route: JSONObject
+        var points: JSONArray
+        var point: JSONObject
+
+        for (i in 0 until routeList.length()) {
+            route = routeList.getJSONObject(i)
+            points = route.getJSONArray("points")
+
+            for (j in 0 until points.length()) {
+                point = points.getJSONObject(j)
+                if (point.getInt("position") == 0) {
+                    val loc = Location("")
+                    loc.latitude = point.getDouble("y_coord")
+                    loc.longitude = point.getDouble("x_coord")
+
+                    if ((lastLocation.distanceTo(loc) / 1000) <= numberPick.text.toString().toFloat())
+
+                        placeMarker(
+                            LatLng(point.getDouble("y_coord"), point.getDouble("x_coord")),
+                            route.getString("route_name")
+                        )
+                }
+            }
+        }
+    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -144,32 +175,21 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
             AppCompatActivity.MODE_PRIVATE
         )
 
+        numberPick = requireActivity().findViewById(R.id.distance_picker)
+        updateBtn = requireActivity().findViewById(R.id.update_btn)
+        updateBtn.setOnClickListener {onDistanceUpdate()}
+
+
         val token = sharedPref.getString("token", "")
 
         val queue = Volley.newRequestQueue(requireContext())
 
-        val url = "http://10.0.2.2:8000/route/get_routes"
+        val url = "http://10.0.2.2:8000/route/get_historic"
 
         val jsonObjectRequest = object: JsonArrayRequest(
             Method.GET, url, null,
             { response ->
                 routeList = response
-
-                var route: JSONObject
-                var points: JSONArray
-                var point: JSONObject
-
-                for (i in 0 until routeList.length()) {
-                    route = routeList.getJSONObject(i)
-                    points = route.getJSONArray("points")
-
-                    for (j in 0 until points.length()) {
-                        point = points.getJSONObject(j)
-                        if (point.getInt("position") == 0)
-                            placeMarker(LatLng(point.getDouble("y_coord"), point.getDouble("x_coord")),
-                                route.getString("route_name"))
-                    }
-                }
             },
             { error ->
                 Log.d("error", error.toString())
@@ -184,6 +204,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
         }
 
         queue.add(jsonObjectRequest)
-    }
 
+
+    }
 }

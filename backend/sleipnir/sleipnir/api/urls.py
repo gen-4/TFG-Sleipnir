@@ -36,5 +36,8 @@ api_urls = [
         path('<routeId>/post_message', routeViews.postMessage, name='post_message'),
 
         path('<routeId>/participants', routeViews.getParticipants, name='get_participants'),
+
+        path('get_historic', routeViews.getPastRoutes, name='get_past_routes'),
+        path('<routeId>/update', routeViews.updateRoute, name='update_route'),
     ])),
 ]

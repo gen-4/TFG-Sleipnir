@@ -47,7 +47,7 @@ class DrawerActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_show_routes, R.id.nav_create_route, R.id.nav_register_route_data, R.id.nav_show_register,
-                R.id.nav_show_observers, R.id.nav_show_observeds_ubication, R.id.nav_show_horses
+                R.id.nav_show_observers, R.id.nav_show_observeds_ubication, R.id.nav_show_horses, R.id.nav_historic_by_distance,
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

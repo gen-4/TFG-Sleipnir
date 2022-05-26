@@ -9,15 +9,16 @@
     android:orientation="vertical"
     android:weightSum="10"
     android:gravity="center"
-    tools:context=".ui.show_routes.ShowRoutes" >
+    tools:context=".ui.historic.HistoricByDistanceFragment" >
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6" />
 
+
+<fragment
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="6" />
 
 
     <androidx.cardview.widget.CardView
@@ -33,6 +34,31 @@
             android:background="@color/secondary"
             android:orientation="vertical"
             android:gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/distance_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:minWidth="200dp"
+                android:textColor="@color/textColor"
+                android:hint="@string/distance_picker_hint"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/update_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:text="@string/update" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/data_container"
@@ -52,27 +78,6 @@
                     android:textSize="25sp"
                     android:layout_margin="7dp" />
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:textColor="@color/textColor"
-                        android:text="@string/celebration_label" />
-
-                    <TextView
-                        android:id="@+id/celebration_date_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/textColor" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
 
                 <Button
                     android:id="@+id/detailed_btn"
@@ -90,5 +95,8 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.cardview.widget.CardView>
+
+
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

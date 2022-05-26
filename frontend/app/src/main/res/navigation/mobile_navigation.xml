@@ -47,4 +47,10 @@
         android:name="com.android.sleipnir.ui.horse.ShowHorsesFragment"
         android:label="@string/my_horses_title"
         tools:layout="@layout/fragment_show_horses" />
+
+    <fragment
+        android:id="@+id/nav_historic_by_distance"
+        android:name="com.android.sleipnir.ui.historic.HistoricByDistanceFragment"
+        android:label="@string/historic_by_distance_title"
+        tools:layout="@layout/fragment_historic_by_distance" />
 </navigation>

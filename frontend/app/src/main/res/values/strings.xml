@@ -110,4 +110,9 @@
     <string name="owner_label">Owner:</string>
     <string name="show_participants_button">Participants</string>
 
+    <string name="historic_by_distance_title">Past routes by distance</string>
+    <string name="distance_picker_hint">Distance in km</string>
+    <string name="update">Update</string>
+    <string name="title_activity_update_past_route">UpdatePastRouteActivity</string>
+
 </resources>

@@ -110,4 +110,9 @@
     <string name="owner_label">Propietario:</string>
     <string name="show_participants_button">Participantes</string>
 
+
+    <string name="historic_by_distance_title">Histórico por distancia</string>
+    <string name="distance_picker_hint">Distancia en km</string>
+    <string name="update">Actualizar</string>
+
 </resources>
