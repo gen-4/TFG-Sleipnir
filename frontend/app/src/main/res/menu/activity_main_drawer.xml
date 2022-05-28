@@ -37,5 +37,13 @@
             android:id="@+id/nav_historic_by_distance"
             android:title="@string/historic_by_distance_title" />
 
+        <item
+            android:id="@+id/nav_show_friends"
+            android:title="@string/show_friends_title" />
+
+        <item
+            android:id="@+id/nav_friend_routes"
+            android:title="@string/friend_routes_title" />
+
     </group>
 </menu>

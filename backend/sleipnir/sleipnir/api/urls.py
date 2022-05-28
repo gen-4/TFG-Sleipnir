@@ -20,6 +20,11 @@ api_urls = [
         path('<userId>/horse/<horseId>/delete', riderViews.deleteHorse, name='delete_horse'),
         path('<userId>/add_horse', riderViews.addHorse, name='add_horse'),
         path('<userId>/horse/horseId>/add_image', riderViews.addHorseImage, name='add_horse_image'),
+
+        path('<id>/friends', riderViews.getRiderFriends, name='get_rider_friends'),
+        path('<id>/add_friend', riderViews.addFriend, name='add_friend'),
+        path('<userId>/delete_friend/<id>', riderViews.deleteFriend, name='delete_friend'),
+        path('<userId>/get_friend_routes', riderViews.getFriendRoutes, name='get_friend_routes'),
     ])),
     path('route/', include([
         path('create_route', routeViews.createRoute, name='create_route'),

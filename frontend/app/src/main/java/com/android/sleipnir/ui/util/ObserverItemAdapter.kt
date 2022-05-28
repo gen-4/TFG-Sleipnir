@@ -15,13 +15,15 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 
-class ObserverItemAdapter(context: Context, userId: Int, token: String, data: ArrayList<JSONObject>): BaseAdapter() {
+class ObserverItemAdapter(context: Context, userId: Int, token: String,
+                          data: ArrayList<JSONObject>, isFriend: Boolean): BaseAdapter() {
 
 
     var context: Context? = context
     val userId = userId
     val token = token
     var data: ArrayList<JSONObject> = data
+    val isFriend = isFriend
     private var inflater: LayoutInflater? = context
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
 
@@ -65,9 +67,14 @@ class ObserverItemAdapter(context: Context, userId: Int, token: String, data: Ar
 
 
                 val queue = Volley.newRequestQueue(context)
-                val url = "http://10.0.2.2:8000/user/".plus(userId)
+                var url = "http://10.0.2.2:8000/user/".plus(userId)
                     .plus("/delete_observer/")
                     .plus(id.toString())
+
+                if (isFriend)
+                    url = "http://10.0.2.2:8000/user/".plus(userId)
+                        .plus("/delete_friend/")
+                        .plus(id.toString())
 
                 val jsonObjectRequest = object: JsonObjectRequest(
                     Method.POST, url, null,

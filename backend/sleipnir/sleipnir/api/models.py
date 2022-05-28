@@ -12,7 +12,8 @@ class Rider(models.Model):
     is_admin = models.BooleanField(null=False, default=False)
     last_x_coord = models.FloatField(null=True, default=None)
     last_y_coord = models.FloatField(null=True, default=None)
-    observers = models.ManyToManyField('self', symmetrical=False)
+    observers = models.ManyToManyField('self', symmetrical=False, related_name='rider_observer')
+    friends = models.ManyToManyField('self', symmetrical=False, related_name='rider_friend')
 
     def __str__(self):
         return self.user.username+'('+self.id.__str__()+')'

@@ -1,7 +1,6 @@
 import json
-from math import sqrt
 from datetime import datetime
-from multiprocessing.sharedctypes import Value
+
 from django.db import transaction
 from rest_framework.decorators import api_view
 from rest_framework.status import (

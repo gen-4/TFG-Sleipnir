@@ -21,7 +21,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="MAPS_API_KEY}" />
 
         <activity
             android:name=".UpdatePastRouteActivity"
@@ -45,8 +45,31 @@
             android:label="@string/title_activity_detailed_register" />
         <activity
             android:name=".JoinRouteActivity"
-            android:exported="false"
-            android:label="@string/title_activity_join_route" />
+            android:exported="true"
+            android:label="@string/title_activity_join_route">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.algo.com"
+                    android:pathPrefix="/share-route"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.algo.com"
+                    android:pathPrefix="/share-route"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".FillRouteInfoActivity"
             android:exported="false" />
@@ -65,16 +88,6 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action. />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http"
-                    android:host="share_route" />
             </intent-filter>
         </activity>
     </application>

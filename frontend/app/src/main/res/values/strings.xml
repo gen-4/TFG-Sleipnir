@@ -113,6 +113,15 @@
     <string name="historic_by_distance_title">Past routes by distance</string>
     <string name="distance_picker_hint">Distance in km</string>
     <string name="update">Update</string>
-    <string name="title_activity_update_past_route">UpdatePastRouteActivity</string>
+
+    <string name="title_activity_update_past_route">Update route</string>
+
+    <string name="copy_link">Copy share link</string>
+    <string name="link_copied_msg">Link copied to clipboard</string>
+
+    <string name="show_friends_title">My friends</string>
+    <string name="friend_hint">New friend</string>
+
+    <string name="friend_routes_title">Routes joined by friends</string>
 
 </resources>

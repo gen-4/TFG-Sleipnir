@@ -1,4 +1,4 @@
-package com.android.sleipnir.ui.observer
+package com.android.sleipnir.ui.friend
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,20 +12,30 @@ import android.widget.EditText
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.android.sleipnir.R
-import com.android.sleipnir.ui.util.ChatItemAdapter
 import com.android.sleipnir.ui.util.ObserverItemAdapter
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 
-class ShowObserversFragment : Fragment() {
+
+class ShowFriendsFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_show_friends, container, false)
+    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,8 +52,8 @@ class ShowObserversFragment : Fragment() {
             sureToken = token
 
 
-        val observers: ArrayList<JSONObject> = ArrayList()
-        val adapter = ObserverItemAdapter(requireContext(), userId, sureToken, observers, false)
+        val friends: ArrayList<JSONObject> = ArrayList()
+        val adapter = ObserverItemAdapter(requireContext(), userId, sureToken, friends, true)
         val list: ListView = requireActivity().findViewById(R.id.observer_container)
         list.adapter = adapter
 
@@ -53,7 +63,7 @@ class ShowObserversFragment : Fragment() {
             val observerInput: EditText = requireActivity().findViewById(R.id.observer_input)
 
             val url = "http://10.0.2.2:8000/user/".plus(userId)
-                .plus("/add_observer")
+                .plus("/add_friend")
 
             val jsonBody = JSONObject()
             jsonBody.put("username", observerInput.text)
@@ -62,7 +72,7 @@ class ShowObserversFragment : Fragment() {
                 Method.POST, url, jsonBody,
                 { response ->
 
-                    observers.add(response)
+                    friends.add(response)
                     adapter.notifyDataSetChanged()
 
                 },
@@ -90,7 +100,7 @@ class ShowObserversFragment : Fragment() {
 
 
         val url = "http://10.0.2.2:8000/user/".plus(userId)
-            .plus("/observers")
+            .plus("/friends")
         val jsonObjectRequest = object: JsonArrayRequest(
             Method.GET, url, null,
             { response ->
@@ -98,7 +108,7 @@ class ShowObserversFragment : Fragment() {
                 for (i in 0 until response.length()) {
                     val observer = response.getJSONObject(i)
 
-                    observers.add(observer)
+                    friends.add(observer)
                 }
 
                 adapter.notifyDataSetChanged()
@@ -117,13 +127,6 @@ class ShowObserversFragment : Fragment() {
         }
 
         queue.add(jsonObjectRequest)
-
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_observers, container, false)
 
     }
 

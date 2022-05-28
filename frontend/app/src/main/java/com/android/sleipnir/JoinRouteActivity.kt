@@ -1,31 +1,30 @@
 package com.android.sleipnir
 
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
-
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import androidx.appcompat.app.AppCompatActivity
 import com.android.sleipnir.databinding.ActivityJoinRouteBinding
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import org.json.JSONArray
 import org.json.JSONObject
+
 
 class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -109,8 +108,33 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
 
         val queue = Volley.newRequestQueue(this)
 
+        val action: String? = intent?.action
+        val data: Uri? = intent?.data
 
-        val strRoute = intent.getStringExtra("route")
+        var strRoute: String? = ""
+        if (data == null)
+             strRoute = intent.getStringExtra("route")
+        else
+            strRoute = data.getQueryParameter("route")
+
+
+        val shareBtn: Button = findViewById(R.id.share_btn)
+        shareBtn.setOnClickListener {
+
+            try {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Sleipnir")
+                var shareMessage = "\nShare route\n\n"
+                shareMessage = shareMessage + "http://www.algo.com/share-route/?route=" + strRoute
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                startActivity(Intent.createChooser(shareIntent, "choose one"))
+            } catch (e: Exception) {
+                //e.toString();
+            }
+        }
+
+
         var jsonRoute = JSONObject()
 
         if (strRoute != null) {

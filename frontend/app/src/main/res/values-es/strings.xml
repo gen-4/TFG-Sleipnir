@@ -115,4 +115,14 @@
     <string name="distance_picker_hint">Distancia en km</string>
     <string name="update">Actualizar</string>
 
+    <string name="title_activity_update_past_route">Actualizar ruta</string>
+
+    <string name="copy_link">Compartir link</string>
+    <string name="link_copied_msg">Link copiado al portapapeles</string>
+
+    <string name="show_friends_title">Mis amigos</string>
+    <string name="friend_hint">Nuevo amigo</string>
+
+    <string name="friend_routes_title">Routas a las que se han unido tus amigos</string>
+
 </resources>

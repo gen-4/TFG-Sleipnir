@@ -53,4 +53,17 @@
         android:name="com.android.sleipnir.ui.historic.HistoricByDistanceFragment"
         android:label="@string/historic_by_distance_title"
         tools:layout="@layout/fragment_historic_by_distance" />
+
+    <fragment
+        android:id="@+id/nav_show_friends"
+        android:name="com.android.sleipnir.ui.friend.ShowFriendsFragment"
+        android:label="@string/show_friends_title"
+        tools:layout="@layout/fragment_show_friends" />
+
+    <fragment
+        android:id="@+id/nav_friend_routes"
+        android:name="com.android.sleipnir.ui.friend.FriendsRoutesFragment"
+        android:label="@string/friend_routes_title"
+        tools:layout="@layout/fragment_friends_routes" />
+
 </navigation>

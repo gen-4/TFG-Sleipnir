@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import authenticate
 from django.db import transaction
 from rest_framework.authtoken.models import Token
@@ -16,17 +18,12 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 
-from .models import Rider, Horse
+from .models import Rider, Horse, Route
 from .serializers import RiderSignupSerializer, UserLoginSerializer, RiderSerializer
 from .serializers import ObserverSerializer, LastLocationSerializer, UpdateLastLocationSerializer
-from .serializers import HorseSerializer, HorseAddSerializer
+from .serializers import HorseSerializer, HorseAddSerializer, GetRoutesSerializer
 
 # Create your views here.
-
-"""
-    IMPORTANTE EL select_related CUANDO CLAVES FORANEAS
-"""
-
 @api_view(["POST"])
 @permission_classes((AllowAny,))  # here we specify permission by default we set IsAuthenticated
 def login(request):
@@ -236,14 +233,6 @@ def addHorse(request, userId):
 @api_view(['POST'])
 def addHorseImage(request, userId, horseId):
 
-    print("!!!!!!!!!!")
-    print
-    print(request.data)
-    print
-    print("!!!!!!!!!!!!")
-
-
-
     try:
         rider = Rider.objects.get(pk=userId)
         horse = Horse.objects.get(pk=horseId)
@@ -258,3 +247,75 @@ def addHorseImage(request, userId, horseId):
     horse.save()
 
     return Response(status=HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+def getRiderFriends(request, id):
+
+    try:
+        rider = Rider.objects.get(pk=id)
+    
+    except:
+        return Response({'detail': 'User not found'}, status = HTTP_404_NOT_FOUND)
+
+    friends = rider.friends.all()
+    friend_serializer = ObserverSerializer(friends, many=True)
+
+    return Response(friend_serializer.data, status=HTTP_200_OK)
+
+@api_view(['POST'])
+def addFriend(request, id):
+
+    try:
+        rider = Rider.objects.get(pk=id)
+    
+    except:
+        return Response({'detail': 'User not found'}, status = HTTP_404_NOT_FOUND)
+
+    
+    user = User.objects.get(username=request.data["username"])
+    friend = Rider.objects.get(user=user)
+    
+    rider.friends.add(friend)
+    rider.save()
+
+    friend_serializer = ObserverSerializer(friend)
+    return Response(friend_serializer.data, status=HTTP_200_OK)
+
+@api_view(['POST'])
+def deleteFriend(request, userId, id):
+
+    try:
+        rider = Rider.objects.get(pk=userId)
+        friend = Rider.objects.get(pk=id)
+    
+    except:
+        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
+
+    rider.friends.remove(friend)
+    rider.save()
+
+    return Response({'detail': f'Observer {id} deleted'}, status=HTTP_200_OK)
+
+@api_view(['GET'])
+def getFriendRoutes(request, userId):
+    routes_list = Route.objects.all()
+    rider = Rider.objects.get(pk=userId)
+    friends = rider.friends.all()
+    final_route_list = []
+    friends_in_routes = []
+
+    for route in routes_list:
+        if (route.celebration_date > datetime.now()):
+            for friend in friends:
+                friend_horses = Horse.objects.filter(owner=friend)
+                if any(element in friend_horses for element in route.participants.all()):
+                    friends_in_routes.append(friend.user.username)
+                    final_route_list.append(route)
+
+    route_serializer = GetRoutesSerializer(final_route_list, many=True)
+    for i, route in enumerate(route_serializer.data):
+        route['friend'] = friends_in_routes[i]
+
+    return Response(route_serializer.data, status=HTTP_200_OK)
