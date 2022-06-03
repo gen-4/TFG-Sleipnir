@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from django.db import transaction
+from requests import request
 from rest_framework.decorators import api_view
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
@@ -283,4 +284,10 @@ def updateRoute(request, routeId):
 
     route_serializer = RouteSerializer(route)
 
+    return Response(route_serializer.data, status=HTTP_200_OK)
+
+@api_view(['GET'])
+def getDetailedRoute(request, routeId):
+    route = Route.objects.get(pk=routeId)
+    route_serializer = GetRoutesSerializer(route)
     return Response(route_serializer.data, status=HTTP_200_OK)

@@ -91,6 +91,7 @@ class Point(models.Model):
     x_coord = models.FloatField(null=False)
     y_coord = models.FloatField(null=False)
     position = models.DecimalField(null=False, default=0, max_digits=2, decimal_places=0)
+    altitude = models.FloatField(null=True, default=0.0)
     route = models.ForeignKey(Route, null=True, on_delete=models.CASCADE, related_name='route_point')
     record = models.ForeignKey(Record, null=True, on_delete=models.CASCADE, related_name='record_point')
 

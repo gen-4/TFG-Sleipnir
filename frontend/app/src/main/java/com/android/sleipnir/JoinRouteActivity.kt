@@ -102,22 +102,68 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+
+    }
+
+    private fun executeQueries() {
         val showChatButton: Button = findViewById(R.id.show_chat_button)
         val showParticipantsBtn: Button = findViewById(R.id.show_participants_button)
+        val joinButton: Button = findViewById(R.id.join_button)
+        val leaveButton: Button = findViewById(R.id.leave_button)
 
 
         val queue = Volley.newRequestQueue(this)
+        val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
 
         val action: String? = intent?.action
         val data: Uri? = intent?.data
 
         var strRoute: String? = ""
         if (data == null)
-             strRoute = intent.getStringExtra("route")
+            strRoute = intent.getStringExtra("route")
         else
             strRoute = data.getQueryParameter("route")
 
 
+        var jsonRoute = JSONObject()
+
+        if (strRoute != null) {
+            jsonRoute = JSONObject(strRoute)
+        }
+
+        //Get route from backend if accessed by code
+        val routeId = intent.getIntExtra("routeId", -1)
+        if (routeId != -1) {
+            val token = sharedPref.getString("token", "")
+
+            val urlGetSingleRoute = "http://10.0.2.2:8000/route/".plus(routeId.toString()).plus("/detailed")
+
+
+            val jsonObject = object: JsonObjectRequest(
+                Method.GET, urlGetSingleRoute, null,
+                { response ->
+                    updateInfo(response, leaveButton, joinButton, sharedPref, queue)
+                },
+                { error ->
+                    Log.d("error", error.toString())
+                }
+            )
+            {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    if (token != null)
+                        headers["Authorization"] = "Token $token"
+                    return headers
+                }
+            }
+
+            queue.add(jsonObject)
+        }
+
+
+
+
+        //Code generation
         val shareBtn: Button = findViewById(R.id.share_btn)
         shareBtn.setOnClickListener {
 
@@ -125,8 +171,10 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
                 val shareIntent = Intent(Intent.ACTION_SEND)
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Sleipnir")
+                /*var shareMessage = "\nShare route\n\n"
+                shareMessage = shareMessage + "http://www.algo.com/share-route/?route=" + strRoute*/
                 var shareMessage = "\nShare route\n\n"
-                shareMessage = shareMessage + "http://www.algo.com/share-route/?route=" + strRoute
+                shareMessage = shareMessage + "#" + jsonRoute.getInt("id")
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
                 startActivity(Intent.createChooser(shareIntent, "choose one"))
             } catch (e: Exception) {
@@ -135,11 +183,6 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         }
 
 
-        var jsonRoute = JSONObject()
-
-        if (strRoute != null) {
-            jsonRoute = JSONObject(strRoute)
-        }
 
         showChatButton.setOnClickListener {
             val intnt = Intent(this, ShowChat::class.java)
@@ -155,6 +198,66 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         }
 
 
+        if (routeId == -1)
+            updateInfo(jsonRoute, leaveButton, joinButton, sharedPref, queue)
+
+
+        val userId = sharedPref.getInt("userId", -1)
+        val token = sharedPref.getString("token", "")
+        var sureToken = ""
+        if (token != null)
+            sureToken = token
+
+
+        getHorses(queue, userId, sureToken)
+    }
+
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.setOnMarkerClickListener(this)
+
+        executeQueries()
+    }
+
+
+
+    private fun setUpMap(jsonRoute: JSONObject) {
+        val points = jsonRoute.getJSONArray("points")
+        var point: JSONObject
+        for (i in 0 until points.length()) {
+            point = points.getJSONObject(i)
+            val coord = LatLng(point.getDouble("y_coord"), point.getDouble("x_coord"))
+            if (point.getInt("position") == 0)
+                placeMarker(coord, true)
+            else
+                placeMarker(coord, false)
+        }
+    }
+
+    override fun onMarkerClick(p0: Marker): Boolean {
+        return false
+    }
+
+    private fun placeMarker(coord: LatLng, isFirst: Boolean) {
+        val markerOptions = MarkerOptions().position(coord)
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+        if (isFirst)
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        mMap.addMarker(markerOptions)
+        if (isFirst)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coord, 12f))
+    }
+
+    private fun updateInfo(jsonRoute: JSONObject, leaveButton: Button, joinButton: Button,
+                           sharedPref: SharedPreferences, queue: RequestQueue) {
+
+        setUpMap(jsonRoute)
+
+        val userId = sharedPref.getInt("userId", -1)
+        val token = sharedPref.getString("token", "")
         val routeNameText: TextView = findViewById(R.id.route_name)
         val maxParticipantsText: TextView = findViewById(R.id.max_participants_text)
         val currParticipantsText: TextView = findViewById(R.id.curr_participants)
@@ -171,23 +274,6 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         durationText.text = duration.plus(" h")
 
 
-        val joinButton: Button = findViewById(R.id.join_button)
-        val leaveButton: Button = findViewById(R.id.leave_button)
-
-        val sharedPref : SharedPreferences = applicationContext.getSharedPreferences("userPreference", MODE_PRIVATE)
-
-
-
-
-
-        val userId = sharedPref.getInt("userId", -1)
-        val token = sharedPref.getString("token", "")
-        var sureToken = ""
-        if (token != null)
-            sureToken = token
-
-
-        getHorses(queue, userId, sureToken)
 
 
 
@@ -284,52 +370,5 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
 
             queue.add(jsonObj)
         }
-
-    }
-
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        mMap.uiSettings.isZoomControlsEnabled = true
-        mMap.setOnMarkerClickListener(this)
-
-        setUpMap()
-    }
-
-
-
-    private fun setUpMap() {
-        val strRoute = intent.getStringExtra("route")
-        var jsonRoute = JSONObject()
-
-        if (strRoute != null) {
-            jsonRoute = JSONObject(strRoute)
-        }
-
-        val points = jsonRoute.getJSONArray("points")
-        var point: JSONObject
-        for (i in 0 until points.length()) {
-            point = points.getJSONObject(i)
-            val coord = LatLng(point.getDouble("y_coord"), point.getDouble("x_coord"))
-            if (point.getInt("position") == 0)
-                placeMarker(coord, true)
-            else
-                placeMarker(coord, false)
-        }
-    }
-
-    override fun onMarkerClick(p0: Marker): Boolean {
-        return false
-    }
-
-    private fun placeMarker(coord: LatLng, isFirst: Boolean) {
-        val markerOptions = MarkerOptions().position(coord)
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-        if (isFirst)
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-        mMap.addMarker(markerOptions)
-        if (isFirst)
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coord, 12f))
     }
 }

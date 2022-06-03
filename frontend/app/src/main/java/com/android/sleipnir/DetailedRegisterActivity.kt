@@ -1,5 +1,6 @@
 package com.android.sleipnir
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.location.Location
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,6 +39,7 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
     }
 
 
@@ -73,6 +76,13 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
                 distanceText.text = response.getInt("distance").toString().plus(" m")
 
                 setUpMap(response.getJSONArray("points"))
+
+                val altitudeBtn: Button = findViewById(R.id.access_altitude_btn)
+                altitudeBtn.setOnClickListener {
+                    val intnt = Intent(this, AltitudeChartActivity::class.java)
+                    intnt.putExtra("points", response.getJSONArray("points").toString())
+                    startActivity(intnt)
+                }
             },
             { error ->
                 Log.d("error", error.toString())
@@ -106,6 +116,7 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         val lineOptions = PolylineOptions()
         lineOptions.color(Color.RED)
         lineOptions.geodesic(true)
+        lineOptions.width(20f)
         lineOptions.addAll(pointList)
         mMap.addPolyline(lineOptions)
     }

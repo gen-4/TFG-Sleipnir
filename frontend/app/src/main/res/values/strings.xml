@@ -124,4 +124,13 @@
 
     <string name="friend_routes_title">Routes joined by friends</string>
 
+    <string name="code_hint">Write the route code</string>
+    <string name="search_route_btn">Search</string>
+
+    <string name="access_altitude_btn">Access altitude stats</string>
+
+    <string name="altitude_chat_title">Altitude</string>
+    <string name="altitude_chat_y">Altitude (m)</string>
+    <string name="altitude_chat_x">Distance (m)</string>
+
 </resources>

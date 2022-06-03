@@ -1,27 +1,24 @@
 package com.android.sleipnir
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.AuthFailureError
-import com.android.volley.Response
-import com.android.volley.VolleyError
+import com.android.sleipnir.ui.horse.ShowHorsesFragment
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 
@@ -75,6 +72,7 @@ class AddHorseActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("WrongThread")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_horse)
@@ -191,8 +189,15 @@ class AddHorseActivity : AppCompatActivity() {
         }
 
 
+
+
         val btn: Button = findViewById(R.id.save_horse_btn)
         btn.setOnClickListener {
+
+            val bitmap = (imageContainer.getDrawable() as BitmapDrawable).getBitmap()
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+            val image = stream.toByteArray()
 
             var horseId = 0
 
@@ -207,12 +212,16 @@ class AddHorseActivity : AppCompatActivity() {
             jsonObj.put("coat", coat)
             jsonObj.put("gender", gender)
             jsonObj.put("breed", breed)
+            jsonObj.put("image", userId.toString().plus("horse").plus("/base64/")
+                .plus(Base64.encodeToString(image, Base64.DEFAULT)))
 
 
             val jsonObjectRequest = object: JsonObjectRequest(
                 Method.POST, url, jsonObj,
                 { response ->
                     horseId = response.getInt("id")
+                    val intnt = Intent(this, DrawerActivity::class.java)
+                    startActivity(intnt)
                 },
                 { error ->
                     Log.d("error", error.toString())
@@ -227,50 +236,6 @@ class AddHorseActivity : AppCompatActivity() {
                 }
             }
             queue.add(jsonObjectRequest)
-
-
-
-
-            /*lateinit var imageData: ByteArray
-            val inputStream = contentResolver.openInputStream(imageUri)
-            inputStream?.buffered()?.use {
-                imageData = it.readBytes()
-            }
-
-
-            val addImageUrl = "http://10.0.2.2:8000/user/".plus(userId)
-                .plus("/horse/")
-                .plus(horseId.toString())
-                .plus("/add_image")
-
-            val stringRequest = object : StringRequest(Method.POST, addImageUrl,
-                Response.Listener<String> { response ->
-                    try {
-                        println("response")
-
-                        Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
-                },
-                object : Response.ErrorListener {
-                    override fun onErrorResponse(volleyError: VolleyError) {
-                        Toast.makeText(applicationContext, volleyError.message, Toast.LENGTH_LONG).show()
-                    }
-                })
-            {
-                @Throws(AuthFailureError::class)
-                fun getByteData(): MutableMap<String, FileDataPart> {
-                    var params = HashMap<String, FileDataPart>()
-
-                    params.put("pic" , FileDataPart("image", imageData!!, "jpg"))
-
-                    return params
-                }
-            }
-            Volley.newRequestQueue(this).add(stringRequest)*/
-
-
 
         }
 

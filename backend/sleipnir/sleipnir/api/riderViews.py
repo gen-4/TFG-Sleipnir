@@ -1,5 +1,7 @@
 from datetime import datetime
+import base64
 
+from django.core.files.base import ContentFile
 from django.contrib.auth import authenticate
 from django.db import transaction
 from rest_framework.authtoken.models import Token
@@ -217,36 +219,21 @@ def addHorse(request, userId):
     except:
         return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
 
+    name, imgstr = request.data['image'].split('/base64/')
+    request.data['image'] = ContentFile(base64.b64decode(imgstr), name + '.png')
     horse_serializer = HorseAddSerializer(data=request.data)
 
     horse = None
     if horse_serializer.is_valid():
         horse = Horse(**horse_serializer.validated_data)
         horse.owner = rider
+
     
     horse.save()
 
     horse_serializer = HorseSerializer(horse)
 
     return Response(horse_serializer.data, status=HTTP_200_OK)
-
-@api_view(['POST'])
-def addHorseImage(request, userId, horseId):
-
-    try:
-        rider = Rider.objects.get(pk=userId)
-        horse = Horse.objects.get(pk=horseId)
-    
-    except:
-        return Response({'detail': 'Entity not found'}, status = HTTP_404_NOT_FOUND)
-
-    if (rider != horse.owner):
-        return Response({'detail': 'Forbidden action'}, status=HTTP_403_FORBIDDEN)
-
-    horse.image = request.data
-    horse.save()
-
-    return Response(status=HTTP_200_OK)
 
 
 

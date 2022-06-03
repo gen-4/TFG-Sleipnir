@@ -19,7 +19,6 @@ api_urls = [
         path('<userId>/horses', riderViews.getRiderHorses, name='rider_horses'),
         path('<userId>/horse/<horseId>/delete', riderViews.deleteHorse, name='delete_horse'),
         path('<userId>/add_horse', riderViews.addHorse, name='add_horse'),
-        path('<userId>/horse/horseId>/add_image', riderViews.addHorseImage, name='add_horse_image'),
 
         path('<id>/friends', riderViews.getRiderFriends, name='get_rider_friends'),
         path('<id>/add_friend', riderViews.addFriend, name='add_friend'),
@@ -44,5 +43,6 @@ api_urls = [
 
         path('get_historic', routeViews.getPastRoutes, name='get_past_routes'),
         path('<routeId>/update', routeViews.updateRoute, name='update_route'),
+        path('<routeId>/detailed', routeViews.getDetailedRoute, name='get_route_detailed'),
     ])),
 ]

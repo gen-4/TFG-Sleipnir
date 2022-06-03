@@ -125,4 +125,13 @@
 
     <string name="friend_routes_title">Routas ás que teus amigos se uniron</string>
 
+    <string name="code_hint">Escriba o código da ruta</string>
+    <string name="search_route_btn">Buscar</string>
+
+    <string name="access_altitude_btn">Rexistro de altitudes</string>
+
+    <string name="altitude_chat_title">Altitud</string>
+    <string name="altitude_chat_y">Altitud (m)</string>
+    <string name="altitude_chat_x">Distancia (m)</string>
+
 </resources>

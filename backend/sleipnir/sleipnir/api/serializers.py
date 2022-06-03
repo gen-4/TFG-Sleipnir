@@ -65,7 +65,7 @@ class RecordPointSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Point
-        fields = ['id', 'x_coord', 'y_coord', 'position', 'record']
+        fields = ['id', 'x_coord', 'y_coord', 'position', 'altitude', 'record']
 
 class RecordSerializer(serializers.ModelSerializer):
 
@@ -73,8 +73,15 @@ class RecordSerializer(serializers.ModelSerializer):
         model = Record
         fields = ['id', 'rider', 'record_name', 'distance', 'duration', 'avg_speed']
 
+
+class GetRecordPointsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Point
+        fields = ['x_coord', 'y_coord', 'position', 'altitude']
+
 class GetRecordSerializer(serializers.ModelSerializer):
-    points = GetPointsSerializer(source='record_point', many=True, read_only=True)
+    points = GetRecordPointsSerializer(source='record_point', many=True, read_only=True)
 
     class Meta:
         model = Record
@@ -151,7 +158,8 @@ class HorseAddSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Horse
-        exclude = ('image',)
+        fields = '__all__'
+        #exclude = ('image',)
 
 class HorseParticipantsSerializer(serializers.ModelSerializer):
     owner = ObserverSerializer()

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
-import android.opengl.Visibility
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -15,16 +14,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.android.sleipnir.DrawerActivity
-import com.android.sleipnir.FillRouteInfoActivity
 import com.android.sleipnir.JoinRouteActivity
 import com.android.sleipnir.R
-import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -33,7 +29,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -91,6 +86,15 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
             }
 
         }
+
+        val searchRouteBtn: Button = requireActivity().findViewById(R.id.code_btn)
+        searchRouteBtn.setOnClickListener {
+            val codeInput: EditText = requireActivity().findViewById(R.id.code_input)
+
+            val intnt = Intent(requireContext(), JoinRouteActivity::class.java)
+            intnt.putExtra("routeId", codeInput.text.toString().replace("#", "").toInt())
+            startActivity(intnt)
+        }
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {
@@ -147,6 +151,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
         val token = sharedPref.getString("token", "")
 
         val queue = Volley.newRequestQueue(requireContext())
+
 
         val url = "http://10.0.2.2:8000/route/get_routes"
 

@@ -30,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import org.json.JSONArray
 import org.json.JSONObject
@@ -43,7 +44,6 @@ class RegisterRouteData : Fragment() {
 
     private var isRecording = false
     private var isFirst = true
-    private val POINTS_TRESHOLD = 2
 
     private var distance = Float.fromBits(0)
     private var avgSpeed = Float.fromBits(0)
@@ -55,14 +55,18 @@ class RegisterRouteData : Fragment() {
     private lateinit var avgSpeedText: TextView
 
     private var pointList = ArrayList<LatLng>()
+    private var pointAltitudeList = ArrayList<Double>()
     private val lineOptions = PolylineOptions()
 
     private val observers = ArrayList<String>()
+
+    private lateinit var route: Polyline
 
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
         private const val DELAY_MINUTES = 2
+        private const val POINTS_TRESHOLD = 2
     }
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -72,7 +76,8 @@ class RegisterRouteData : Fragment() {
 
         lineOptions.color(Color.RED)
         lineOptions.geodesic(true)
-        mMap.addPolyline(lineOptions)
+        lineOptions.width(20f)
+        route = mMap.addPolyline(lineOptions)
 
         setUpMap()
     }
@@ -102,7 +107,7 @@ class RegisterRouteData : Fragment() {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 12f))
             }
 
-        }
+        }// Wrong format, no value for you.
     }
 
     override fun onCreateView(
@@ -134,7 +139,7 @@ class RegisterRouteData : Fragment() {
         while (true) {
             Thread.sleep((DELAY_MINUTES * 60000).toLong())
 
-            val currentLocation = fusedLocationClient.lastLocation.addOnSuccessListener(requireContext() as Activity) { location ->
+            val currentLocation = fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity() as Activity) { location ->
 
                 if (location != null) {
                     lastLocation = location
@@ -197,7 +202,7 @@ class RegisterRouteData : Fragment() {
                     for (location in locationResult.locations) {
 
                         val point = LatLng(location.latitude, location.longitude)
-
+                        pointAltitudeList.add(location.altitude)
                         if (pointList.isNotEmpty()) {
                             val startLocation = Location("")
                             startLocation.latitude = pointList.last().latitude
@@ -212,7 +217,7 @@ class RegisterRouteData : Fragment() {
                         }
 
                         pointList.add(point)
-                        lineOptions.add(point)
+                        route.points = pointList
                     }
                 }
             }
@@ -255,7 +260,6 @@ class RegisterRouteData : Fragment() {
     fun getSecondsFromDurationString(value: String): Int {
         val parts = value.split(":").toTypedArray()
 
-        // Wrong format, no value for you.
         if (parts.size < 2 || parts.size > 3) return 0
         var seconds = 0
         var minutes = 0
@@ -278,6 +282,7 @@ class RegisterRouteData : Fragment() {
             jsonObj.put("x_coord", point.longitude)
             jsonObj.put("y_coord", point.latitude)
             jsonObj.put("position", i)
+            jsonObj.put("altitude", pointAltitudeList[i])
             jsonArray.put(jsonObj)
         }
 
