@@ -58,6 +58,7 @@ class SignupActivity : AppCompatActivity() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_signup), Toast.LENGTH_SHORT).show()
                 }
             )
 

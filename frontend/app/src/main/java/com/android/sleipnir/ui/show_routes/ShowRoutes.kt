@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.android.sleipnir.JoinRouteActivity
@@ -178,6 +179,7 @@ class ShowRoutes : Fragment(), GoogleMap.OnMarkerClickListener {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_get_routes), Toast.LENGTH_SHORT).show()
             }
         )
         {

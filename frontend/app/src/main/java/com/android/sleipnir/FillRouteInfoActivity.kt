@@ -72,6 +72,7 @@ class FillRouteInfoActivity : AppCompatActivity() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_get_horses), Toast.LENGTH_SHORT).show()
             }
         )
         {
@@ -160,6 +161,7 @@ class FillRouteInfoActivity : AppCompatActivity() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_create_route), Toast.LENGTH_SHORT).show()
                 }
             )
             {

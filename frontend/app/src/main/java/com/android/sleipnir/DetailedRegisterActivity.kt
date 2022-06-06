@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -86,6 +87,7 @@ class DetailedRegisterActivity : AppCompatActivity(), OnMapReadyCallback {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_detailed_record), Toast.LENGTH_SHORT).show()
             }
         )
         {

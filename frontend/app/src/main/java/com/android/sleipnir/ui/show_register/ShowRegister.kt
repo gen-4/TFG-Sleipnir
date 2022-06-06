@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.sleipnir.DetailedRegisterActivity
 import com.android.sleipnir.FillRouteInfoActivity
@@ -69,6 +70,7 @@ class ShowRegister : Fragment() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_get_records), Toast.LENGTH_SHORT).show()
             }
         )
         {

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.sleipnir.R
 import com.android.sleipnir.ui.util.ObserverItemAdapter
@@ -78,6 +79,7 @@ class ShowFriendsFragment : Fragment() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_add_friend), Toast.LENGTH_SHORT).show()
                 }
             )
             {
@@ -115,6 +117,7 @@ class ShowFriendsFragment : Fragment() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_get_friends), Toast.LENGTH_SHORT).show()
             }
         )
         {

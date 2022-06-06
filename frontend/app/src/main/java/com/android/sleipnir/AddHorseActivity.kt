@@ -225,6 +225,7 @@ class AddHorseActivity : AppCompatActivity() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_add_horse), Toast.LENGTH_SHORT).show()
                 }
             )
             {

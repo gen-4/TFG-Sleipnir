@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
 
@@ -67,6 +68,7 @@ class ShowDetailedHorse : AppCompatActivity() {
             0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888,
             {error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_get_horse_image), Toast.LENGTH_SHORT).show()
             }
         )
         queue.add(imageRequest)

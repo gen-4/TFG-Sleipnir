@@ -9,6 +9,7 @@ import io.data2viz.charts.chart.Chart
 import io.data2viz.charts.chart.chart
 import io.data2viz.charts.chart.discrete
 import io.data2viz.charts.chart.mark.area
+import io.data2viz.charts.chart.mark.line
 import io.data2viz.charts.chart.quantitative
 import io.data2viz.geom.Size
 import io.data2viz.viz.VizContainerView
@@ -36,7 +37,7 @@ class AltitudeChartActivity : AppCompatActivity() {
             previousLoc.latitude = point.getDouble("y_coord")
             previousLoc.longitude = point.getDouble("x_coord")
 
-            altitudeList.add(Altitude(distance, point.getDouble("altitude")))
+            altitudeList.add(Altitude(distance.toDouble(), point.getDouble("altitude")))
         }
 
         setContentView(AltitudeChart(this, altitudeList))
@@ -50,7 +51,7 @@ class AltitudeChart(context: Context, altitudeData: List<Altitude>) : VizContain
         title = context.getString(R.string.altitude_chat_title)
 
         // Create a discrete dimension for the year of the census
-        val distance = discrete({ domain.distance }) {
+        val distance = quantitative({ domain.distance }) {
             name = context.getString(R.string.altitude_chat_x)
         }
 
@@ -60,7 +61,7 @@ class AltitudeChart(context: Context, altitudeData: List<Altitude>) : VizContain
         }
 
         // Using a discrete dimension for the X-axis and a continuous one for the Y-axis
-        area(distance, altitude)
+        line(distance, altitude)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -71,4 +72,4 @@ class AltitudeChart(context: Context, altitudeData: List<Altitude>) : VizContain
 
 const val vizSize = 500.0
 
-data class Altitude(val distance: Float, val altitude: Double)
+data class Altitude(val distance: Double, val altitude: Double)

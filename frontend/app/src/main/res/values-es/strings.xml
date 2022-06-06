@@ -134,4 +134,33 @@
     <string name="altitude_chat_y">Altitud (m)</string>
     <string name="altitude_chat_x">Distancia (m)</string>
 
+
+
+    <string name="error_get_horses">Error cargando caballos</string>
+    <string name="error_update_route">Error actualizando ruta</string>
+    <string name="error_signup">Error registrándose</string>
+    <string name="error_get_participants">Error cargando participantes</string>
+    <string name="error_get_horse_image">Error cargando imagen</string>
+    <string name="error_post_message">Error añadiendo mensaje</string>
+    <string name="error_get_messages">Error cargando mensajes</string>
+    <string name="error_login">Error logueándose</string>
+    <string name="error_detailed_route">Error cargando ruta detallada</string>
+    <string name="error_has_joined">Error obteniendo estatus de participando</string>
+    <string name="error_leaving_route">Error abandonando ruta</string>
+    <string name="error_joining_route">Error uniéndose a ruta</string>
+    <string name="error_create_route">Error creando ruta</string>
+    <string name="error_detailed_record">Error cargando registro detallado</string>
+    <string name="error_add_horse">Error añadiendo caballo</string>
+    <string name="error_get_routes">Error cargando rutas</string>
+    <string name="error_get_records">Error cargando registros</string>
+    <string name="error_modify_location">Error modificando última ubicación</string>
+    <string name="error_register_data">Error registrando datos de ruta</string>
+    <string name="error_add_observer">Error añadiendo observador</string>
+    <string name="error_get_observers">Error cargando observadores</string>
+    <string name="error_get_past_routes">Error cargando rutas pasadas</string>
+    <string name="error_get_friend_routes">Error cargando rutas de amigos</string>
+    <string name="error_add_friend">Error añadiendo amigo</string>
+    <string name="error_get_friends">Error cargando amigos</string>
+    <string name="error_get_observeds">Error cargando ubicaciones de observados</string>
+
 </resources>

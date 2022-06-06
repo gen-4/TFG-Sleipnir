@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
@@ -58,6 +59,7 @@ class LoginActivity : AppCompatActivity() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                        Toast.makeText(this, getString(R.string.error_login), Toast.LENGTH_SHORT).show()
                 }
             )
 

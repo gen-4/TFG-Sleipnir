@@ -133,4 +133,33 @@
     <string name="altitude_chat_y">Altitude (m)</string>
     <string name="altitude_chat_x">Distance (m)</string>
 
+
+
+    <string name="error_get_horses">Unable to load horses</string>
+    <string name="error_update_route">Unable to update route</string>
+    <string name="error_signup">Error signing up</string>
+    <string name="error_get_participants">Unable to load participants</string>
+    <string name="error_get_horse_image">Unable to load image</string>
+    <string name="error_post_message">Unable to post message</string>
+    <string name="error_get_messages">Unable to load messages</string>
+    <string name="error_login">Error loging in</string>
+    <string name="error_detailed_route">Unable to load detailed route</string>
+    <string name="error_has_joined">Error obtaining join status</string>
+    <string name="error_leaving_route">Unable to leave route</string>
+    <string name="error_joining_route">Unable to join route</string>
+    <string name="error_create_route">Unable to create route</string>
+    <string name="error_detailed_record">Unable to load detailed record</string>
+    <string name="error_add_horse">Unable to add horse</string>
+    <string name="error_get_routes">Unable to load routes</string>
+    <string name="error_get_records">Unable to load records</string>
+    <string name="error_modify_location">Unable to modify last location</string>
+    <string name="error_register_data">Unable to register route data</string>
+    <string name="error_add_observer">Unable to add observer</string>
+    <string name="error_get_observers">Unable to load observers</string>
+    <string name="error_get_past_routes">Unable to load past routes</string>
+    <string name="error_get_friend_routes">Unable to load friend routes</string>
+    <string name="error_add_friend">Unable to add friend</string>
+    <string name="error_get_friends">Unable to load friends</string>
+    <string name="error_get_observeds">Unable to load observeds</string>
+
 </resources>

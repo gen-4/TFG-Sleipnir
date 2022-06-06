@@ -13,10 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Chronometer
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -154,6 +151,7 @@ class RegisterRouteData : Fragment() {
                         },
                         { error ->
                             Log.d("error", error.toString())
+                            Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_modify_location), Toast.LENGTH_SHORT).show()
                         }
                     )
                     {
@@ -308,6 +306,7 @@ class RegisterRouteData : Fragment() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_register_data), Toast.LENGTH_SHORT).show()
             }
         )
         {

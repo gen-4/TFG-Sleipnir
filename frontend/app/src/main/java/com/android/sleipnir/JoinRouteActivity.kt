@@ -78,6 +78,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_get_horses), Toast.LENGTH_SHORT).show()
             }
         )
         {
@@ -146,6 +147,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_detailed_route), Toast.LENGTH_SHORT).show()
                 }
             )
             {
@@ -295,6 +297,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_has_joined), Toast.LENGTH_SHORT).show()
             }
         )
         {
@@ -326,6 +329,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_leaving_route), Toast.LENGTH_SHORT).show()
                 }
             )
             {
@@ -357,6 +361,7 @@ class JoinRouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_joining_route), Toast.LENGTH_SHORT).show()
                 }
             )
             {

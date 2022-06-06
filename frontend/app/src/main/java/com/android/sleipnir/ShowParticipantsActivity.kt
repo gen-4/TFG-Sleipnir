@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ListView
+import android.widget.Toast
 import com.android.sleipnir.ui.util.HorseItemAdapter
 import com.android.sleipnir.ui.util.ParticipantItemAdapter
 import com.android.volley.toolbox.JsonArrayRequest
@@ -69,6 +70,7 @@ class ShowParticipantsActivity : AppCompatActivity() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_get_participants), Toast.LENGTH_SHORT).show()
             }
         )
         {

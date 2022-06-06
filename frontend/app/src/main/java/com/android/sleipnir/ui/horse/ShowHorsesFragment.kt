@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.sleipnir.AddHorseActivity
 import com.android.sleipnir.DetailedRegisterActivity
@@ -95,6 +96,7 @@ class ShowHorsesFragment : Fragment() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_get_horses), Toast.LENGTH_SHORT).show()
                 }
             )
             {
@@ -128,6 +130,7 @@ class ShowHorsesFragment : Fragment() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(requireActivity(), requireActivity().getString(R.string.error_get_observers), Toast.LENGTH_SHORT).show()
             }
         )
         {

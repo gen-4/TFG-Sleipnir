@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Toast
 import com.android.sleipnir.ui.util.ChatItemAdapter
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -60,6 +61,7 @@ class ShowChat : AppCompatActivity() {
                 },
                 { error ->
                     Log.d("error", error.toString())
+                    Toast.makeText(this, getString(R.string.error_post_message), Toast.LENGTH_SHORT).show()
                 }
             )
             {
@@ -115,6 +117,7 @@ class ShowChat : AppCompatActivity() {
             },
             { error ->
                 Log.d("error", error.toString())
+                Toast.makeText(this, getString(R.string.error_get_messages), Toast.LENGTH_SHORT).show()
             }
         )
         {

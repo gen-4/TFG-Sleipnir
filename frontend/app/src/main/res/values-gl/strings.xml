@@ -134,4 +134,33 @@
     <string name="altitude_chat_y">Altitud (m)</string>
     <string name="altitude_chat_x">Distancia (m)</string>
 
+
+
+    <string name="error_get_horses">Error cargando cabalos</string>
+    <string name="error_update_route">Error actualizando ruta</string>
+    <string name="error_signup">Error rexistrándose</string>
+    <string name="error_get_participants">Error cargando participantes</string>
+    <string name="error_get_horse_image">Error cargando imaxen</string>
+    <string name="error_post_message">Error añadíndo mensaxe</string>
+    <string name="error_get_messages">Error cargando mensaxes</string>
+    <string name="error_login">Error logueándose</string>
+    <string name="error_detailed_route">Error cargando ruta detallada</string>
+    <string name="error_has_joined">Error obtendo estatus de participando</string>
+    <string name="error_leaving_route">Error abandonando ruta</string>
+    <string name="error_joining_route">Error uníndose a ruta</string>
+    <string name="error_create_route">Error creando ruta</string>
+    <string name="error_detailed_record">Error cargando rexistro detallado</string>
+    <string name="error_add_horse">Error añadíndo cabalo</string>
+    <string name="error_get_routes">Error cargando rutas</string>
+    <string name="error_get_records">Error cargando rexistros</string>
+    <string name="error_modify_location">Error modificando última ubicación</string>
+    <string name="error_register_data">Error rexistrando datos de ruta</string>
+    <string name="error_add_observer">Error añadíndo observador</string>
+    <string name="error_get_observers">Error cargando observadores</string>
+    <string name="error_get_past_routes">Error cargando rutas pasadas</string>
+    <string name="error_get_friend_routes">Error cargando rutas de amigos</string>
+    <string name="error_add_friend">Error añadíndo amigo</string>
+    <string name="error_get_friends">Error cargando amigos</string>
+    <string name="error_get_observeds">Error cargando ubicacións de observados</string>
+
 </resources>
