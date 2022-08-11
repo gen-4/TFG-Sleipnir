@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import dotenv_values
+
+# Get environment variables
+env_config = dotenv_values('settings.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qnq18j!d2##lk=d&*nua!+lgqy^$t^i^sn!zwl-&-j*yx=&oi0'
+SECRET_KEY = env_config['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -95,11 +99,11 @@ WSGI_APPLICATION = 'sleipnir.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sleipnir',
-        'USER': 'sleipnir',
-        'PASSWORD': 'sleipnir',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': env_config['NAME'],
+        'USER': env_config['USER'],
+        'PASSWORD': env_config['PASSWORD'],
+        'HOST': env_config['HOST'],
+        'PORT': env_config['PORT'],
         'TEST': {
             'NAME': 'test_sleipnir',
         },

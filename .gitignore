@@ -130,6 +130,10 @@ dmypy.json
 
 
 
-#Kotlin
+# Kotlin
 *.jar
 *.class
+
+
+# Environment file
+*.env
