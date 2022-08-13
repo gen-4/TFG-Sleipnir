@@ -99,11 +99,11 @@ WSGI_APPLICATION = 'sleipnir.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env_config['NAME'],
-        'USER': env_config['USER'],
-        'PASSWORD': env_config['PASSWORD'],
-        'HOST': env_config['HOST'],
-        'PORT': env_config['PORT'],
+        'NAME': os.environ['NAME'],
+        'USER': os.environ['USER'],
+        'PASSWORD': os.environ['PASSWORD'],
+        'HOST': os.environ['HOST'],
+        'PORT': os.environ['PORT'],
         'TEST': {
             'NAME': 'test_sleipnir',
         },
